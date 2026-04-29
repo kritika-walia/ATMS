@@ -1,5 +1,5 @@
 // Vercel Serverless Function (Node)
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // 🔐 ENV variables (Vercel me set karenge)
     const SUPABASE_URL = process.env.SUPABASE_URL;
