@@ -732,6 +732,7 @@ const supabase = window.supabase.createClient(
 );
 
 // ================= LOAD RO =================
+<script>
 async function loadRO() {
 
   const { data, error } = await supabase
@@ -743,17 +744,21 @@ async function loadRO() {
     return;
   }
 
-  const uniqueRO = [...new Set(data.map(d => d.select))];
+  const uniqueRO = [...new Set(data.map(d => d.state))];
 
   const roDropdown = document.getElementById("roDropdown");
+  roDropdown.innerHTML = '<option value="">Select RO</option>';
 
   uniqueRO.forEach(ro => {
-    let option = document.createElement("option");
-    option.value = ro;
-    option.textContent = ro;
-    roDropdown.appendChild(option);
+    if(ro){
+      let option = document.createElement("option");
+      option.value = ro;
+      option.textContent = ro;
+      roDropdown.appendChild(option);
+    }
   });
 }
+</script>
 
 // ================= RO → PIU =================
 document.getElementById("roDropdown").addEventListener("change", async function() {
