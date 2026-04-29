@@ -116,7 +116,7 @@ input[type=number]{
 
 <div class="col-md-8">
 <label class="form-label">Highway / Stretch</label>
-<input type="text" class="form-control" placeholder="NH-48 Delhi-Gurgaon" readonly>
+<input type="text" id="projectTitle" class="form-control" placeholder="NH-48 Delhi-Gurgaon" readonly>
 <div class="small-note">Mention NH No. + Stretch</div>
 </div>
 
@@ -838,7 +838,7 @@ async function saveFormData() {
   const ro = document.getElementById("roDropdown").value;
   const piu = document.getElementById("piuDropdown").value;
   const upc = document.getElementById("upcDropdown").value;
-  const project = document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value;
+  const project = document.getElementById("projectTitle").value;
   const length = document.querySelector("[name='length']").value;
   const lanes = document.querySelector("[name='lanes']").value;
 
