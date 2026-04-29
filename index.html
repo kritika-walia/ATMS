@@ -699,10 +699,12 @@ function showThankYou(){
     location.reload();
 }
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
 const supabase = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
 
 // ================= LOAD RO =================
@@ -756,7 +758,6 @@ document.getElementById("roDropdown").addEventListener("change", async function 
     }
   });
 
-  // reset next dropdown
   document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
 });
 
@@ -796,10 +797,6 @@ document.getElementById("upcDropdown").addEventListener("change", async function
 
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
-    document.querySelector("[name='piu']").value = data.piu || "";
-    document.querySelector("[name='ro']").value = data.implementing_ro || "";
-
-    // extra fields (optional auto-fill)
     document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value = data.project_title || "";
     document.querySelector("input[placeholder='4']").value = data.lanes || "";
   }
