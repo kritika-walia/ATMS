@@ -93,13 +93,17 @@ input[type=number]{
 
 <div class="col-md-4">
 <label class="form-label">RO</label>
-<input type="text" name="ro" class="form-control" placeholder="Delhi, Mumbai">
+<select id="roDropdown" class="form-control">
+  <option value="">Select RO</option>
+</select>
 <div class="small-note">Regional Office of NHAI</div>
 </div>
 
 <div class="col-md-4">
 <label class="form-label">PIU</label>
-<input type="text" name="piu" class="form-control" placeholder="PIU Gurgaon">
+<select id="piuDropdown" class="form-control">
+  <option value="">Select PIU</option>
+</select>
 <div class="small-note">Project Implementation Unit</div>
 </div>
 
@@ -718,33 +722,103 @@ function showThankYou(){
     location.reload();
 }
 </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
 const supabase = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 );
 
-// UPC dropdown fill
-async function loadUPC() {
+// ================= LOAD RO =================
+async function loadRO() {
+
   const { data, error } = await supabase
     .from("master_projects")
-    .select("upc");
+    .select("implementing_ro");
 
-  let dropdown = document.getElementById("upcDropdown");
+  if(error){
+    console.log(error);
+    return;
+  }
+
+  const uniqueRO = [...new Set(data.map(d => d.implementing_ro))];
+
+  const roDropdown = document.getElementById("roDropdown");
+
+  uniqueRO.forEach(ro => {
+    let option = document.createElement("option");
+    option.value = ro;
+    option.textContent = ro;
+    roDropdown.appendChild(option);
+  });
+}
+
+// ================= RO → PIU =================
+document.getElementById("roDropdown").addEventListener("change", async function() {
+
+  const selectedRO = this.value;
+
+  const { data } = await supabase
+    .from("master_projects")
+    .select("piu")
+    .eq("implementing_ro", selectedRO);
+
+  const uniquePIU = [...new Set(data.map(d => d.piu))];
+
+  const piuDropdown = document.getElementById("piuDropdown");
+  piuDropdown.innerHTML = '<option value="">Select PIU</option>';
+
+  uniquePIU.forEach(piu => {
+    let option = document.createElement("option");
+    option.value = piu;
+    option.textContent = piu;
+    piuDropdown.appendChild(option);
+  });
+});
+
+// ================= PIU → UPC =================
+document.getElementById("piuDropdown").addEventListener("change", async function() {
+
+  const selectedPIU = this.value;
+
+  const { data } = await supabase
+    .from("master_projects")
+    .select("upc")
+    .eq("piu", selectedPIU);
+
+  const upcDropdown = document.getElementById("upcDropdown");
+  upcDropdown.innerHTML = '<option value="">Select UPC</option>';
 
   data.forEach(item => {
     let option = document.createElement("option");
     option.value = item.upc;
     option.textContent = item.upc;
-    dropdown.appendChild(option);
+    upcDropdown.appendChild(option);
   });
-}
+});
 
-loadUPC();
+// ================= UPC → AUTO FILL =================
+document.getElementById("upcDropdown").addEventListener("change", async function() {
+
+  const selectedUPC = this.value;
+
+  const { data } = await supabase
+    .from("master_projects")
+    .select("*")
+    .eq("upc", selectedUPC)
+    .single();
+
+  if (data) {
+    document.querySelector("[name='length']").value = data.length || "";
+  }
+
+});
+
+// INIT
+loadRO();
 </script>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
@@ -794,8 +868,5 @@ loadUPC();
 
 
     
-</body>
-</html>
-
 </body>
 </html>
