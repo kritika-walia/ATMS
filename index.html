@@ -598,7 +598,7 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
             title="Total challans generated from VSDS / VIDES for selected month and year.">i</span>
         </label>
 
-        <input type="number" min="0" class="form-control" placeholder="Enter challan count">
+        <input type="number" min = "0" id="challanCount" placeholder="Enter challan count">
     </div>
 
     <!-- Ambulance Month -->
@@ -654,7 +654,7 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
             title="Total ambulance dispatch assistance cases for selected month and year.">i</span>
         </label>
 
-        <input type="number" min="0" class="form-control" placeholder="Enter support count">
+        <input type="number" id="ambulanceCount" placeholder="Enter support count">
     </div>
 
 </div>
@@ -882,11 +882,12 @@ async function saveFormData() {
     const monthly = {
   challan_month: document.getElementById("challanMonth").value,
   challan_year: document.getElementById("challanYear").value,
-  challan_count: document.querySelector("input[placeholder='Enter challan count']").value,
+  challan_count: document.getElementById("challanCount").value,
+
 
   ambulance_month: document.getElementById("ambulanceMonth").value,
   ambulance_year: document.getElementById("ambulanceYear").value,
-  ambulance_count: document.querySelector("input[placeholder='Enter support count']").value
+  ambulance_count: document.getElementById("ambulanceCount").value
 };
 
   // ================= VENDOR =================
