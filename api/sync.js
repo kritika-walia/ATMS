@@ -1,5 +1,9 @@
 // Vercel Serverless Function (Node)
 module.exports = async function handler(req, res) {
+  return res.status(200).json({
+    message: "API working ✅"
+  });
+};
   try {
     // 🔐 ENV variables (Vercel me set karenge)
     const SUPABASE_URL = process.env.SUPABASE_URL;
