@@ -1,86 +1,42 @@
-// Vercel Serverless Function (Node)
 module.exports = async function handler(req, res) {
-  return res.status(200).json({
-    message: "API working ✅"
-  });
-};
   try {
-    // 🔐 ENV variables (Vercel me set karenge)
-    const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY; // service role key
-    const NHAI_API_KEY = process.env.NHAI_API_KEY;
 
-    // 1) AUTH → JWT
-    const authUrl = "https://datalakeg.nhai.gov.in/nhaiapi/api/MastersAPI/user_auth?username=Guest_API&password=Guest%402020";
-
-    const authResp = await fetch(authUrl, {
-      method: "GET",
-      headers: {
-        "api-key": NHAI_API_KEY,
-        "Content-Type": "application/json"
+    // STEP 1: AUTH API
+    const authResp = await fetch(
+      "https://datalakeg.nhai.gov.in/nhaiapi/api/MastersAPI/user_auth?username=Guest_API&password=Guest%402020",
+      {
+        method: "GET",
+        headers: {
+          "api-key": "0f086a6346192a5c68bbf45ac5cd7766",
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
 
-    if (!authResp.ok) {
-      const t = await authResp.text();
-      return res.status(500).json({ error: "Auth failed", detail: t });
-    }
+    const token = await authResp.text();
 
-    const token = await authResp.text(); // JWT string
-
-    // 2) MASTER DATA
-    const dataUrl = "https://datalakeg.nhai.gov.in/nhaiapi/api/MastersAPI/NHAI_BasicData_Details";
-
-    const dataResp = await fetch(dataUrl, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`
+    // STEP 2: DATA API
+    const dataResp = await fetch(
+      "https://datalakeg.nhai.gov.in/nhaiapi/api/MastersAPI/NHAI_BasicData_Details",
+      {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "api-key": "0f086a6346192a5c68bbf45ac5cd7766"
+        }
       }
-    });
+    );
 
-    if (!dataResp.ok) {
-      const t = await dataResp.text();
-      return res.status(500).json({ error: "Data fetch failed", detail: t });
-    }
-
-    const projects = await dataResp.json();
-
-    // 3) UPSERT into Supabase via REST
-    // (Service Role key se bulk upsert allowed hota hai)
-    const upsertResp = await fetch(`${SUPABASE_URL}/rest/v1/master_projects`, {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_SERVICE_KEY,
-        "Authorization": `Bearer ${SUPABASE_SERVICE_KEY}`,
-        "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates" // upsert on conflict (upc unique)
-      },
-      body: JSON.stringify(
-        projects.map(p => ({
-          upc: p.upc,
-          project_title: p.project_title,
-          implementing_ro: p.implementing_ro,
-          piu: p.piu,
-          length: p.length,
-          lanes: p.lanes,
-          nh: p.nh,
-          state: p.state,
-          district: p.district
-        }))
-      )
-    });
-
-    if (!upsertResp.ok) {
-      const t = await upsertResp.text();
-      return res.status(500).json({ error: "DB upsert failed", detail: t });
-    }
+    const data = await dataResp.json();
 
     return res.status(200).json({
-      message: "Sync complete",
-      count: projects.length
+      message: "API working + data fetched ✅",
+      sample: data[0]
     });
 
-  } catch (e) {
-    return res.status(500).json({ error: e.message });
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
   }
-}
+};
