@@ -678,7 +678,7 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
 
 <!-- Submit -->
 <div class="text-center mt-4 mb-5">
-<button type="button" class="btn btn-success px-5 py-2" onclick="showThankYou()">
+<button type="button" class="btn btn-success px-5 py-2" onclick="saveFormData()">
 Submit
 </button>
 </div>
@@ -833,7 +833,88 @@ document.querySelectorAll(".eq-table tbody tr").forEach(row => {
 
 });
 </script>
+<script>
+async function saveFormData() {
 
+  // ================= BASIC =================
+  const ro = document.getElementById("roDropdown").value;
+  const piu = document.getElementById("piuDropdown").value;
+  const upc = document.getElementById("upcDropdown").value;
+  const project = document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value;
+  const length = document.querySelector("[name='length']").value;
+  const lanes = document.querySelector("[name='lanes']").value;
+
+  // ================= ATMS =================
+  const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
+
+  // ================= OFC =================
+  const ofc = {
+    status: document.getElementById("ofcSelect").value,
+    length: document.getElementById("ofcLength").value,
+    core: document.getElementById("ofcCore").value
+  };
+
+  // ================= EQUIPMENT =================
+  let equipment = [];
+
+  document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+    const name = row.cells[0].innerText.trim();
+    const installed = row.querySelector(".installed-count")?.value || "";
+    const working = row.querySelector(".working-count")?.value || "";
+
+    equipment.push({
+      component: name,
+      installed,
+      working
+    });
+  });
+
+  // ================= OPERATION =================
+  const operational = {
+    since: document.querySelector("input[type='date']").value,
+    status: document.querySelectorAll(".form-select")[1].value,
+    challan: document.querySelectorAll(".form-select")[2].value
+  };
+
+  // ================= MONTHLY =================
+  const monthly = {
+    challan_count: document.querySelector("input[placeholder='Enter challan count']").value,
+    ambulance_count: document.querySelector("input[placeholder='Enter support count']").value
+  };
+
+  // ================= VENDOR =================
+  const vendor = document.querySelector("input[placeholder='ABC Tech Pvt Ltd']").value;
+
+  // ================= INSERT =================
+  const { error } = await supabaseClient
+    .from("atms_forms")
+    .insert([{
+      ro,
+      piu,
+      upc,
+      project_title: project,
+      length,
+      lanes,
+      atms_status: atms,
+      ofc,
+      equipment,
+      operational,
+      monthly,
+      vendor
+    }]);
+
+  if (error) {
+    console.log(error);
+    alert("Error saving data");
+  } else {
+    alert("✅ Full form saved!");
+    location.reload();
+  }
+}
+</script>
+
+
+    
     
 </body>
 </html>
