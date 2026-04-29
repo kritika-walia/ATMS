@@ -93,13 +93,13 @@ input[type=number]{
 
 <div class="col-md-4">
 <label class="form-label">RO</label>
-<input type="text" class="form-control" placeholder="Delhi, Mumbai">
+<input type="text" name="ro" class="form-control" placeholder="Delhi, Mumbai">
 <div class="small-note">Regional Office of NHAI</div>
 </div>
 
 <div class="col-md-4">
 <label class="form-label">PIU</label>
-<input type="text" class="form-control" placeholder="PIU Gurgaon">
+<input type="text" name="piu" class="form-control" placeholder="PIU Gurgaon">
 <div class="small-note">Project Implementation Unit</div>
 </div>
 
@@ -118,7 +118,7 @@ input[type=number]{
 
 <div class="col-md-4">
 <label class="form-label">Length (KM)</label>
-<input type="number" min="0" step="0.01" class="form-control" placeholder="45.6">
+<input type="number" name="length" min="0" step="0.01" class="form-control">
 <div class="small-note">Total Length | Unit: KM</div>
 </div>
 
@@ -745,14 +745,16 @@ async function loadUPC() {
 loadUPC();
 </script>
 
-    <!-- STEP 1 wala script (Supabase + loadUPC) -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
 const supabase = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "YOUR_ANON_KEY"
+  "YOUR_REAL_ANON_KEY"
 );
 
+// Load dropdown
 async function loadUPC() {
   const { data } = await supabase
     .from("master_projects")
@@ -768,13 +770,9 @@ async function loadUPC() {
   });
 }
 
-loadUPC();
-</script>
-
-<!-- 🔥 STEP 3 (AUTO-FILL) YAHAN ADD KAR -->
-
-<script>
+// Auto-fill
 document.getElementById("upcDropdown").addEventListener("change", async function() {
+
   const selectedUPC = this.value;
 
   const { data } = await supabase
@@ -784,13 +782,18 @@ document.getElementById("upcDropdown").addEventListener("change", async function
     .single();
 
   if (data) {
-    document.querySelector("input[name='ro']").value = data.implementing_ro;
-    document.querySelector("input[name='piu']").value = data.piu;
-    document.querySelector("input[name='length']").value = data.length;
+    document.querySelector("[name='ro']").value = data.implementing_ro || "";
+    document.querySelector("[name='piu']").value = data.piu || "";
+    document.querySelector("[name='length']").value = data.length || "";
   }
+
 });
+
+loadUPC();
 </script>
 
+
+    
 </body>
 </html>
 
