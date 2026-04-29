@@ -721,9 +721,7 @@ function showThankYou(){
     alert("Thanks for the Submission!");
     location.reload();
 }
-</script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
 const supabase = window.supabase.createClient(
@@ -732,25 +730,24 @@ const supabase = window.supabase.createClient(
 );
 
 // ================= LOAD RO =================
-<script>
 async function loadRO() {
 
   const { data, error } = await supabase
     .from("master_projects")
-    .select("state");
+    .select("implementing_ro");
 
-  if(error){
+  if (error) {
     console.log(error);
     return;
   }
 
-  const uniqueRO = [...new Set(data.map(d => d.state))];
+  const uniqueRO = [...new Set(data.map(d => d.implementing_ro))];
 
   const roDropdown = document.getElementById("roDropdown");
   roDropdown.innerHTML = '<option value="">Select RO</option>';
 
   uniqueRO.forEach(ro => {
-    if(ro){
+    if (ro) {
       let option = document.createElement("option");
       option.value = ro;
       option.textContent = ro;
@@ -758,10 +755,9 @@ async function loadRO() {
     }
   });
 }
-</script>
 
 // ================= RO → PIU =================
-document.getElementById("roDropdown").addEventListener("change", async function() {
+document.getElementById("roDropdown").addEventListener("change", async function () {
 
   const selectedRO = this.value;
 
@@ -776,15 +772,20 @@ document.getElementById("roDropdown").addEventListener("change", async function(
   piuDropdown.innerHTML = '<option value="">Select PIU</option>';
 
   uniquePIU.forEach(piu => {
-    let option = document.createElement("option");
-    option.value = piu;
-    option.textContent = piu;
-    piuDropdown.appendChild(option);
+    if (piu) {
+      let option = document.createElement("option");
+      option.value = piu;
+      option.textContent = piu;
+      piuDropdown.appendChild(option);
+    }
   });
+
+  // reset next dropdown
+  document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
 });
 
 // ================= PIU → UPC =================
-document.getElementById("piuDropdown").addEventListener("change", async function() {
+document.getElementById("piuDropdown").addEventListener("change", async function () {
 
   const selectedPIU = this.value;
 
@@ -797,15 +798,17 @@ document.getElementById("piuDropdown").addEventListener("change", async function
   upcDropdown.innerHTML = '<option value="">Select UPC</option>';
 
   data.forEach(item => {
-    let option = document.createElement("option");
-    option.value = item.upc;
-    option.textContent = item.upc;
-    upcDropdown.appendChild(option);
+    if (item.upc) {
+      let option = document.createElement("option");
+      option.value = item.upc;
+      option.textContent = item.upc;
+      upcDropdown.appendChild(option);
+    }
   });
 });
 
 // ================= UPC → AUTO FILL =================
-document.getElementById("upcDropdown").addEventListener("change", async function() {
+document.getElementById("upcDropdown").addEventListener("change", async function () {
 
   const selectedUPC = this.value;
 
@@ -817,58 +820,18 @@ document.getElementById("upcDropdown").addEventListener("change", async function
 
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
+    document.querySelector("[name='piu']").value = data.piu || "";
+    document.querySelector("[name='ro']").value = data.implementing_ro || "";
+
+    // extra fields (optional auto-fill)
+    document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value = data.project_title || "";
+    document.querySelector("input[placeholder='4']").value = data.lanes || "";
   }
 
 });
 
 // INIT
 loadRO();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<script>
-const supabase = window.supabase.createClient(
-  "https://evhencgqdjwzqghaimut.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
-);
-
-// Load dropdown
-async function loadUPC() {
-  const { data } = await supabase
-    .from("master_projects")
-    .select("upc");
-
-  let dropdown = document.getElementById("upcDropdown");
-
-  data.forEach(item => {
-    let option = document.createElement("option");
-    option.value = item.upc;
-    option.textContent = item.upc;
-    dropdown.appendChild(option);
-  });
-}
-
-// Auto-fill
-document.getElementById("upcDropdown").addEventListener("change", async function() {
-
-  const selectedUPC = this.value;
-
-  const { data } = await supabase
-    .from("master_projects")
-    .select("*")
-    .eq("upc", selectedUPC)
-    .single();
-
-  if (data) {
-    document.querySelector("[name='ro']").value = data.implementing_ro || "";
-    document.querySelector("[name='piu']").value = data.piu || "";
-    document.querySelector("[name='length']").value = data.length || "";
-  }
-
-});
-
-loadUPC();
 </script>
 
 
