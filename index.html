@@ -736,14 +736,14 @@ async function loadRO() {
 
   const { data, error } = await supabase
     .from("master_projects")
-    .select("implementing_ro");
+    .select("state");
 
   if(error){
     console.log(error);
     return;
   }
 
-  const uniqueRO = [...new Set(data.map(d => d.implementing_ro))];
+  const uniqueRO = [...new Set(data.map(d => d.select))];
 
   const roDropdown = document.getElementById("roDropdown");
 
