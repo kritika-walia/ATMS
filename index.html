@@ -511,62 +511,21 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
 </div>
 </div>
 
-<!-- Section 5 -->
-<div class="card-box">
-<div class="section-title">5. Monthly Outcomes</div>
-
-<style>
-.info-icon{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    background:#dee2e6;
-    color:#6c757d;
-    font-size:11px;
-    margin-left:6px;
-    cursor:pointer;
-}
-.info-icon:hover{
-    background:#adb5bd;
-    color:#fff;
-}
-.month-card{
-    background:#f8fafc;
-    border:1px solid #e9ecef;
-    border-radius:16px;
-    padding:22px;
-}
-</style>
-
 <div class="month-card">
-
 <div class="row g-4">
 
     <!-- Challan Month -->
     <div class="col-md-3">
         <label class="form-label fw-semibold">
             Month (Challans)
-            <span class="info-icon"
-            title="Select reporting month for challan data.">i</span>
+            <span class="info-icon" title="Select reporting month for challan data.">i</span>
         </label>
-
         <select id="challanMonth" class="form-select">
             <option value="">Month</option>
-            <option>January</option>
-            <option>February</option>
-            <option>March</option>
-            <option>April</option>
-            <option>May</option>
-            <option>June</option>
-            <option>July</option>
-            <option>August</option>
-            <option>September</option>
-            <option>October</option>
-            <option>November</option>
-            <option>December</option>
+            <option>January</option><option>February</option><option>March</option>
+            <option>April</option><option>May</option><option>June</option>
+            <option>July</option><option>August</option><option>September</option>
+            <option>October</option><option>November</option><option>December</option>
         </select>
     </div>
 
@@ -574,55 +533,40 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
     <div class="col-md-3">
         <label class="form-label fw-semibold">
             Year
-            <span class="info-icon"
-            title="Select reporting year for challan data.">i</span>
+            <span class="info-icon" title="Select reporting year for challan data.">i</span>
         </label>
-
         <select id="challanYear" class="form-select">
             <option value="">Year</option>
-            <option>2024</option>
-            <option>2025</option>
-            <option>2026</option>
-            <option>2027</option>
-            <option>2028</option>
-            <option>2029</option>
-            <option>2030</option>
+            <option>2024</option><option>2025</option><option>2026</option>
+            <option>2027</option><option>2028</option><option>2029</option><option>2030</option>
         </select>
     </div>
 
     <!-- Challan Count -->
-    <div class="col-md-6">
+    <div class="col-md-3">
         <label class="form-label fw-semibold">
             Challans Created
-            <span class="info-icon"
-            title="Total challans generated from VSDS / VIDES for selected month and year.">i</span>
+            <span class="info-icon" title="Total challans generated from VSDS / VIDES.">i</span>
         </label>
-
-        <input type="number" min = "0" id="challanCount" placeholder="Enter challan count">
+        <input type="number" min="0" id="challanCount" class="form-control" placeholder="Enter challan count">
     </div>
+
+    <!-- Spacer for perfect alignment -->
+    <div class="col-md-3"></div>
+
 
     <!-- Ambulance Month -->
     <div class="col-md-3">
         <label class="form-label fw-semibold">
             Month (Ambulance)
-            <span class="info-icon"
-            title="Select reporting month for ambulance support data.">i</span>
+            <span class="info-icon" title="Select reporting month for ambulance support data.">i</span>
         </label>
-
-      <select id="ambulanceMonth" class="form-select">
+        <select id="ambulanceMonth" class="form-select">
             <option value="">Month</option>
-            <option>January</option>
-            <option>February</option>
-            <option>March</option>
-            <option>April</option>
-            <option>May</option>
-            <option>June</option>
-            <option>July</option>
-            <option>August</option>
-            <option>September</option>
-            <option>October</option>
-            <option>November</option>
-            <option>December</option>
+            <option>January</option><option>February</option><option>March</option>
+            <option>April</option><option>May</option><option>June</option>
+            <option>July</option><option>August</option><option>September</option>
+            <option>October</option><option>November</option><option>December</option>
         </select>
     </div>
 
@@ -630,34 +574,26 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
     <div class="col-md-3">
         <label class="form-label fw-semibold">
             Year
-            <span class="info-icon"
-            title="Select reporting year for ambulance support data.">i</span>
+            <span class="info-icon" title="Select reporting year for ambulance support data.">i</span>
         </label>
-
         <select id="ambulanceYear" class="form-select">
             <option value="">Year</option>
-            <option>2024</option>
-            <option>2025</option>
-            <option>2026</option>
-            <option>2027</option>
-            <option>2028</option>
-            <option>2029</option>
-            <option>2030</option>
+            <option>2024</option><option>2025</option><option>2026</option>
+            <option>2027</option><option>2028</option><option>2029</option><option>2030</option>
         </select>
     </div>
 
     <!-- Ambulance Count -->
-    <div class="col-md-6">
+    <div class="col-md-3">
         <label class="form-label fw-semibold">
-            Ambulance Dispatch Support Provided
-            <span class="info-icon"
-            title="Total ambulance dispatch assistance cases for selected month and year.">i</span>
+            Ambulance Dispatch Support
+            <span class="info-icon" title="Total ambulance dispatch assistance cases.">i</span>
         </label>
-
-        <input type="number" id="ambulanceCount" placeholder="Enter support count">
+        <input type="number" id="ambulanceCount" class="form-control" placeholder="Enter support count">
     </div>
 
-</div>
+    <!-- Spacer -->
+    <div class="col-md-3"></div>
 
 </div>
 </div>
