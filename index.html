@@ -693,6 +693,24 @@ document.addEventListener("input", function(e){
         }
     }
 });
+</script>
+
+<script>
+function showThankYou(){
+    alert("Thanks for the Submission!");
+    location.reload();
+}
+</script>
+
+    <script>
+document.addEventListener("input", function(e){
+    if(e.target.type === "number"){
+        if(e.target.value < 0){
+            e.target.value = 0;
+        }
+    }
+});
+</script>
 
 <script>
 function showThankYou(){
