@@ -396,29 +396,6 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
 </table>
 </div>
 
-<script>
-document.addEventListener("input", function(e){
-
-    if(e.target.classList.contains("installed-count") || 
-       e.target.classList.contains("working-count")){
-
-        let row = e.target.closest("tr");
-        let installed = row.querySelector(".installed-count");
-        let working = row.querySelector(".working-count");
-        let warn = row.querySelector(".warn-text");
-
-        let installedVal = parseInt(installed.value) || 0;
-        let workingVal = parseInt(working.value) || 0;
-
-        if(workingVal > installedVal){
-            working.value = installedVal;
-            warn.style.display = "block";
-        }else{
-            warn.style.display = "none";
-        }
-    }
-
-});
 </script><!-- Section 4 -->
 <div class="card-box">
 <div class="section-title">4. Operational Status Fields</div>
@@ -721,7 +698,6 @@ function showThankYou(){
     alert("Thanks for the Submission!");
     location.reload();
 }
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
 const supabase = window.supabase.createClient(
