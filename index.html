@@ -809,6 +809,30 @@ document.getElementById("upcDropdown").addEventListener("change", async function
 loadRO();
 </script>
 
+    <script>
+document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+
+  const installed = row.querySelector(".installed-count");
+  const active = row.querySelector(".working-count");
+  const warning = row.querySelector(".warn-text");
+
+  function validate() {
+    const instVal = parseInt(installed.value) || 0;
+    const actVal = parseInt(active.value) || 0;
+
+    if (actVal > instVal) {
+      warning.style.display = "block";
+      active.value = instVal; // auto-correct
+    } else {
+      warning.style.display = "none";
+    }
+  }
+
+  installed.addEventListener("input", validate);
+  active.addEventListener("input", validate);
+
+});
+</script>
 
     
 </body>
