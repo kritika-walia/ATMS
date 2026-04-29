@@ -921,29 +921,33 @@ async function saveFormData() {
 </script>
 
 <script>
-document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+document.addEventListener("DOMContentLoaded", () => {
 
-  const installed = row.querySelector(".installed-count");
-  const active = row.querySelector(".working-count");
-  const warning = row.querySelector(".warn-text");
+  document.querySelectorAll(".eq-table tbody tr").forEach(row => {
 
-  // 🔥 IMPORTANT FIX
-  if (!installed || !active) return;
+    const installed = row.querySelector(".installed-count");
+    const active = row.querySelector(".working-count");
+    const warning = row.querySelector(".warn-text");
 
-  function validate() {
-    const instVal = parseInt(installed.value) || 0;
-    const actVal = parseInt(active.value) || 0;
+    // 🔥 THIS LINE FIXES YOUR ERROR
+    if (!installed || !active || !warning) return;
 
-    if (actVal > instVal) {
-      warning.style.display = "block";
-      active.value = instVal;
-    } else {
-      warning.style.display = "none";
+    function validate() {
+      const instVal = parseInt(installed.value) || 0;
+      const actVal = parseInt(active.value) || 0;
+
+      if (actVal > instVal) {
+        warning.style.display = "block";
+        active.value = instVal;
+      } else {
+        warning.style.display = "none";
+      }
     }
-  }
 
-  installed.addEventListener("input", validate);
-  active.addEventListener("input", validate);
+    installed.addEventListener("input", validate);
+    active.addEventListener("input", validate);
+
+  });
 
 });
 </script>
