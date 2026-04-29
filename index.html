@@ -869,6 +869,7 @@ async function saveFormData() {
     });
   });
 
+    
   // ================= OPERATION =================
   const operational = {
     since: document.querySelector("input[type='date']").value,
@@ -877,10 +878,16 @@ async function saveFormData() {
   };
 
   // ================= MONTHLY =================
-  const monthly = {
-    challan_count: document.querySelector("input[placeholder='Enter challan count']").value,
-    ambulance_count: document.querySelector("input[placeholder='Enter support count']").value
-  };
+
+    const monthly = {
+  challan_month: document.getElementById("challanMonth").value,
+  challan_year: document.getElementById("challanYear").value,
+  challan_count: document.querySelector("input[placeholder='Enter challan count']").value,
+
+  ambulance_month: document.getElementById("ambulanceMonth").value,
+  ambulance_year: document.getElementById("ambulanceYear").value,
+  ambulance_count: document.querySelector("input[placeholder='Enter support count']").value
+};
 
   // ================= VENDOR =================
   const vendor = document.querySelector("input[placeholder='ABC Tech Pvt Ltd']").value;
