@@ -128,7 +128,7 @@ input[type=number]{
 
 <div class="col-md-4">
 <label class="form-label">No. of Lanes</label>
-<input type="number" min="0" class="form-control" placeholder="4">
+<input type="number" name="lanes" min="0" class="form-control" placeholder="4">
 </div>
 
 </div>
@@ -800,7 +800,7 @@ document.getElementById("upcDropdown").addEventListener("change", async function
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
     document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value = data.project_title || "";
-    document.querySelector("input[placeholder='4']").value = data.lanes || "";
+    document.querySelector("[name='lanes']").value = data.lanes || "";
   }
 
 });
