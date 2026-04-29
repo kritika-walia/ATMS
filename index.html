@@ -704,7 +704,7 @@ function showThankYou(){
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     
 <script>
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
@@ -712,7 +712,7 @@ const supabase = window.supabase.createClient(
 // ================= LOAD RO =================
 async function loadRO() {
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("master_projects")
     .select("implementing_ro");
 
@@ -741,7 +741,7 @@ document.getElementById("roDropdown").addEventListener("change", async function 
 
   const selectedRO = this.value;
 
-  const { data } = await supabase
+  const { data } = await supabaseClient
     .from("master_projects")
     .select("piu")
     .eq("implementing_ro", selectedRO);
@@ -768,7 +768,7 @@ document.getElementById("piuDropdown").addEventListener("change", async function
 
   const selectedPIU = this.value;
 
-  const { data } = await supabase
+  const { data } = await supabaseClient
     .from("master_projects")
     .select("upc")
     .eq("piu", selectedPIU);
@@ -791,7 +791,7 @@ document.getElementById("upcDropdown").addEventListener("change", async function
 
   const selectedUPC = this.value;
 
-  const { data } = await supabase
+  const { data } = await supabaseClient
     .from("master_projects")
     .select("*")
     .eq("upc", selectedUPC)
