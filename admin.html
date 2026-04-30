@@ -180,6 +180,31 @@ tbody.appendChild(tr);
     });
     });  
 }
+
+  async function getMissingProjects() {
+
+  const allowedStatuses = [ ... ];
+
+  // 1. Eligible projects
+  const { data: master } = await supabaseClient
+    .from("master_projects")
+    .select("upc, project_title, implementing_ro, piu")
+    .in("current_project_stage", allowedStatuses);
+
+  // 2. Filled projects
+  const { data: filled } = await supabaseClient
+    .from("atms_forms")
+    .select("upc");
+
+  const filledUPC = new Set(filled.map(f => f.upc));
+
+  // 3. Missing filter
+  const missing = master.filter(p => !filledUPC.has(p.upc));
+
+  console.log("Missing Count:", missing.length);
+  console.log("Missing List:", missing);
+
+}
 // ================= EXPORT CSV =================
 async function exportToCSV() {
 
