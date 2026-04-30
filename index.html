@@ -465,6 +465,7 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
   <div id="monthlyContainer"></div>
 
   <!-- 👇 HIDDEN TEMPLATE -->
+  <div id="monthlyTemplate" style="display:none;">
   <div class="month-card">
   <div class="row g-4">
 
@@ -592,15 +593,16 @@ function addMonthlyRow() {
   // reset values
   newRow.querySelectorAll("input").forEach(i => i.value = "");
 
-  // months set karo
+  // months
   const months = getRecentMonths();
 
-  newRow.querySelectorAll("select").forEach(select => {
+  newRow.querySelectorAll(".challan-month, .ambulance-month").forEach(select => {
     select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
+  });
 
-      newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
-  setYears(select);
-});
+  // year dropdown
+  newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
+    setYears(select);
   });
 
   document.getElementById("monthlyContainer").appendChild(newRow);
@@ -723,10 +725,6 @@ loadRO();
     <script>
 
         document.addEventListener("DOMContentLoaded", () => {
-
-  const firstRow = document.querySelector(".month-card");
-
-  setMonths(firstRow);
 
   firstRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
     setYears(select);
