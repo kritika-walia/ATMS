@@ -704,6 +704,19 @@ document.getElementById("upcDropdown").addEventListener("change", async function
     .eq("upc", selectedUPC)
     .single();
 
+    const allowedStatuses = [
+  "CC issued",
+  "PCC Issued, CC Pending",
+  "Under O&M through OMT/TOT/O&M Agency at Site",
+  "CC Issued & O&M by Construction Agency",
+  "O&M on Project no more required",
+  "O&M Through MoRTH/State PWD"
+];
+
+const filteredData = data.filter(item =>
+  allowedStatuses.includes(item.current_project_stage)
+);
+
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
     document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value = data.project_title || "";
