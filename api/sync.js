@@ -17,7 +17,8 @@ module.exports = async function handler(req, res) {
 
     // 🔥 STEP 2: Loop & UPDATE only
     for (let item of apiDataList) {
-
+ console.log("Updating UPC:", item.upc);
+      
   await supabase
     .from("master_projects")
     .update({
