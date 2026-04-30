@@ -3,7 +3,7 @@ const { createClient } = require("@supabase/supabase-js");
 // ⚠️ SERVICE ROLE KEY use karo (anon nahi)
 const supabase = createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "PASTE_YOUR_SERVICE_ROLE_KEY"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzQ0NjgyMywiZXhwIjoyMDkzMDIyODIzfQ.cw5RHALiWqApCCj7_HhaxDviSEHoWwgSVbXRe_4q_J0"
 );
 
 module.exports = async function handler(req, res) {
