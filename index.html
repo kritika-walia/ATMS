@@ -568,6 +568,11 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
     <input type="email" id="spocEmail" class="form-control" placeholder="example@email.com">
   </div>
 
+    <div class="col-md-6">
+  <label class="form-label">Contact Number</label>
+  <input type="tel" id="spocPhone" class="form-control" placeholder="Enter mobile number">
+</div>
+
 </div>
 </div>
 
@@ -863,6 +868,7 @@ const si_name = document.getElementById("siName").value;
 const si_address = document.getElementById("siAddress").value;
 const spoc_name = document.getElementById("spocName").value;
 const spoc_email = document.getElementById("spocEmail").value;
+const spoc_phone = document.getElementById("spocPhone").value;
 
   // ================= INSERT =================
  const { error } = await supabaseClient
