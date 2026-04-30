@@ -10,27 +10,31 @@ module.exports = async function handler(req, res) {
 
     console.log("SYNC STARTED");
 
+    // 👉 REAL API lagao (IMPORTANT)
     const response = await fetch("https://evhencgqdjwzqghaimut.supabase.co/rest/v1/");
     const json = await response.json();
 
     const apiDataList = json.data || json;
 
+    if (!Array.isArray(apiDataList)) {
+      console.log("API RESPONSE:", json);
+      throw new Error("API data is not iterable");
+    }
+
     console.log("DATA LENGTH:", apiDataList.length);
 
-if (!Array.isArray(apiDataList)) {
-  console.log("API RESPONSE:", json);
-  throw new Error("API data is not iterable");
-}
+    for (let item of apiDataList) {
 
-for (let item of apiDataList) {
+      console.log("Updating:", item.upc);
 
-  await supabase
-    .from("master_projects")
-    .update({
-      current_project_stage: item.current_project_stage
-    })
-    .eq("upc", item.upc);
-}
+      await supabase
+        .from("master_projects")
+        .update({
+          current_project_stage: item.current_project_stage
+        })
+        .eq("upc", item.upc);
+    }
+
     return res.status(200).json({ success: true });
 
   } catch (error) {
