@@ -459,57 +459,55 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
 
 <!-- Section 5 -->
 <div class="card-box">
-<div class="section-title">5. Monthly Outcomes</div>
+  <div class="section-title">5. Monthly Outcomes</div>
 
-<div id="monthlyContainer">
+  <!-- 👇 EMPTY container -->
+  <div id="monthlyContainer"></div>
 
-  <!-- TEMPLATE ROW -->
-  <div class="month-card">
+  <!-- 👇 HIDDEN TEMPLATE -->
+  <div id="monthlyTemplate" style="display:none;">
 
-    <div class="row g-4">
+    <div class="month-card">
+      <div class="row g-4">
 
-      <!-- ROW 1 -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Month (Challans)</label>
-        <select class="form-select challan-month"></select>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Month (Challans)</label>
+          <select class="form-select challan-month"></select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Year</label>
+          <input type="number" class="form-control challan-year">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Challans Created</label>
+          <input type="number" class="form-control challan-count">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Month (Ambulance)</label>
+          <select class="form-select ambulance-month"></select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Year</label>
+          <input type="number" class="form-control ambulance-year">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Ambulance Dispatch Support Provided</label>
+          <input type="number" class="form-control ambulance-count">
+        </div>
+
       </div>
-
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Year</label>
-        <input type="number" class="form-control challan-year">
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Challans Created</label>
-        <input type="number" class="form-control challan-count">
-      </div>
-
-      <!-- ROW 2 -->
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Month (Ambulance)</label>
-        <select class="form-select ambulance-month"></select>
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Year</label>
-        <input type="number" class="form-control ambulance-year">
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label fw-semibold">Ambulance Dispatch Support Provided</label>
-        <input type="number" class="form-control ambulance-count">
-      </div>
-
     </div>
 
   </div>
 
-</div>
-
-<div class="text-end mt-3">
-  <button type="button" class="btn btn-primary" onclick="addMonthlyRow()">+ Add Month</button>
-</div>
-
+  <div class="text-end mt-3">
+    <button type="button" class="btn btn-primary" onclick="addMonthlyRow()">+ Add Month</button>
+  </div>
 </div>
 <!-- Section 6 -->
 <div class="card-box">
@@ -578,55 +576,24 @@ function getRecentMonths() {
 
 function addMonthlyRow() {
 
-  const recentMonths = getRecentMonths();
-  const monthOptions = recentMonths.map(m => `<option>${m}</option>`).join("");
+  const template = document.querySelector("#monthlyTemplate .month-card");
+  const newRow = template.cloneNode(true);
 
-  const currentYear = new Date().getFullYear();
+  // reset values
+  newRow.querySelectorAll("input").forEach(i => i.value = "");
 
-  const container = document.getElementById("monthlyContainer");
+  // months set karo
+  const months = getRecentMonths();
 
-  const row = document.createElement("div");
-  row.className = "month-card mb-3 p-3 border rounded";
+  newRow.querySelectorAll("select").forEach(select => {
+    select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
+  });
 
-  row.innerHTML = `
-    <div class="row g-3">
-
-      <div class="col-md-2">
-        <select class="form-control challan-month">
-          ${monthOptions}
-        </select>
-      </div>
-
-      <div class="col-md-2">
-        <input type="number" class="form-control challan-year" value="${currentYear}">
-      </div>
-
-      <div class="col-md-2">
-        <input type="number" class="form-control challan-count" placeholder="Challan">
-      </div>
-
-      <div class="col-md-2">
-        <select class="form-control ambulance-month">
-          ${monthOptions}
-        </select>
-      </div>
-
-      <div class="col-md-2">
-        <input type="number" class="form-control ambulance-year" value="${currentYear}">
-      </div>
-
-      <div class="col-md-2">
-        <input type="number" class="form-control ambulance-count" placeholder="Ambulance">
-      </div>
-
-    </div>
-  `;
-
-  container.appendChild(row);
+  document.getElementById("monthlyContainer").appendChild(newRow);
 }
 
-// page load pe ek row auto
-window.addEventListener("DOMContentLoaded", addMonthlyRow);
+// page load pe ek row
+document.addEventListener("DOMContentLoaded", addMonthlyRow);
     
 // ================= LOAD RO =================
 async function loadRO() {
