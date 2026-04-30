@@ -91,6 +91,15 @@ Download Excel
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+  const PASSWORD = "admin123"; // 🔥 apna password yaha set karo
+
+const entered = prompt("Enter Admin Password");
+
+if (entered !== PASSWORD) {
+  alert("Access Denied ❌");
+  document.body.innerHTML = "";
+  throw new Error("Unauthorized");
+}
 // ================= INIT SUPABASE =================
 const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
