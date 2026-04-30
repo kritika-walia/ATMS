@@ -94,58 +94,87 @@ const supabaseClient = window.supabase.createClient(
 );
 
 // ================= LOAD DATA =================
-const monthMap = {
-  January: 0, February: 1, March: 2, April: 3,
-  May: 4, June: 5, July: 6, August: 7,
-  September: 8, October: 9, November: 10, December: 11
-};
+// ================= LOAD DATA =================
+async function loadData() {
 
-data.forEach(row => {
+  const { data, error } = await supabaseClient
+    .from("atms_forms")
+    .select("*");
 
-  const monthly = row.monthly || [];
+  if (error) {
+    console.log(error);
+    alert("Error loading data");
+    return;
+  }
 
-  const last = monthly.sort((a, b) => {
-    return new Date(a.challan_year, monthMap[a.challan_month]) -
-           new Date(b.challan_year, monthMap[b.challan_month]);
-  }).slice(-1)[0] || {};
+  const tbody = document.querySelector("#dataTable tbody");
+  tbody.innerHTML = "";
 
-  const equipmentText = (row.equipment || [])
-    .map(e => `${e.component}: ${e.working}/${e.installed}`)
-    .join(" | ");
+  const monthMap = {
+    January: 0, February: 1, March: 2, April: 3,
+    May: 4, June: 5, July: 6, August: 7,
+    September: 8, October: 9, November: 10, December: 11
+  };
 
-  const tr = document.createElement("tr");
+  data.forEach(row => {
 
-  tr.innerHTML = `
-    <td>${row.ro || ""}</td>
-    <td>${row.piu || ""}</td>
-    <td>${row.upc || ""}</td>
-    <td>${row.project_title || ""}</td>
+    // ✅ FIX monthly type
+    let monthly = row.monthly;
 
-    <td>${row.length || ""}</td>
-    <td>${row.lanes || ""}</td>
-    <td>${row.atms_status || ""}</td>
+    if (typeof monthly === "string") {
+      try {
+        monthly = JSON.parse(monthly);
+      } catch {
+        monthly = [];
+      }
+    }
 
-    <td>${row.ofc?.status || ""}</td>
-    <td>${row.ofc?.length || ""}</td>
-    <td>${row.ofc?.core || ""}</td>
+    if (!Array.isArray(monthly)) monthly = [];
 
-    <td>${equipmentText}</td>
+    const last = monthly.sort((a, b) => {
+      return new Date(a.challan_year, monthMap[a.challan_month]) -
+             new Date(b.challan_year, monthMap[b.challan_month]);
+    }).slice(-1)[0] || {};
 
-    <td>${row.operational?.since || ""}</td>
-    <td>${row.operational?.status || ""}</td>
+    const equipmentText = (row.equipment || [])
+      .map(e => `${e.component}: ${e.working}/${e.installed}`)
+      .join(" | ");
 
-    <td>${last.challan_month || ""}</td>
-    <td>${last.challan_count || ""}</td>
+    const tr = document.createElement("tr");
 
-    <td>${last.ambulance_month || ""}</td>
-    <td>${last.ambulance_count || ""}</td>
+    tr.innerHTML = `
+      <td>${row.ro || ""}</td>
+      <td>${row.piu || ""}</td>
+      <td>${row.upc || ""}</td>
+      <td>${row.project_title || ""}</td>
 
-    <td>${row.si_name || ""}</td>
-    <td>${row.spoc_email || ""}</td>
-  `;
+      <td>${row.length || ""}</td>
+      <td>${row.lanes || ""}</td>
+      <td>${row.atms_status || ""}</td>
 
-  tbody.appendChild(tr);
-});
+      <td>${row.ofc?.status || ""}</td>
+      <td>${row.ofc?.length || ""}</td>
+      <td>${row.ofc?.core || ""}</td>
+
+      <td>${equipmentText}</td>
+
+      <td>${row.operational?.since || ""}</td>
+      <td>${row.operational?.status || ""}</td>
+
+      <td>${last.challan_month || ""}</td>
+      <td>${last.challan_count || ""}</td>
+
+      <td>${last.ambulance_month || ""}</td>
+      <td>${last.ambulance_count || ""}</td>
+
+      <td>${row.si_name || ""}</td>
+      <td>${row.spoc_email || ""}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+}
 // ================= EXPORT CSV =================
 async function exportToCSV() {
 
