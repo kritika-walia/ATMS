@@ -190,7 +190,17 @@ async function exportToCSV() {
       .map(e => `${e.component}: ${e.working}/${e.installed}`)
       .join(" | ");
 
-    const monthly = item.monthly || [];
+   let monthly = item.monthly;
+
+if (typeof monthly === "string") {
+  try {
+    monthly = JSON.parse(monthly);
+  } catch {
+    monthly = [];
+  }
+}
+
+if (!Array.isArray(monthly)) monthly = [];
 
     monthly.forEach(m => {
 
