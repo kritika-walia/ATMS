@@ -119,7 +119,7 @@ async function exportToCSV() {
 
     const monthly = item.monthly || [];
 
-    if (Array.isArray(monthly)) {
+   if (Array.isArray(monthly) && monthly.length) {
 
   monthly.forEach(m => {
 
@@ -129,10 +129,24 @@ async function exportToCSV() {
       upc: item.upc,
       project: item.project_title,
 
+      length: item.length,
+      lanes: item.lanes,
+      atms_status: item.atms_status,
+
       ofc_status: item.ofc?.status,
       ofc_length: item.ofc?.length,
       ofc_core: item.ofc?.core,
 
+      // 🔥 EQUIPMENT (convert array → string)
+      equipment: (item.equipment || [])
+        .map(e => `${e.component}: ${e.working}/${e.installed}`)
+        .join(" | "),
+
+      // 🔥 OPERATIONAL
+      operational_since: item.operational?.since,
+      operational_status: item.operational?.status,
+
+      // 🔥 MONTHLY
       challan_month: m.challan_month,
       challan_year: m.challan_year,
       challan_count: m.challan_count,
@@ -141,24 +155,35 @@ async function exportToCSV() {
       ambulance_year: m.ambulance_year,
       ambulance_count: m.ambulance_count,
 
+      // 🔥 VENDOR
       si_name: item.si_name,
-      spoc: item.spoc_name
+      si_address: item.si_address,
+      spoc_name: item.spoc_name,
+      spoc_email: item.spoc_email
+
     });
 
   });
 
 } else {
 
-  // fallback (agar monthly empty ya object hai)
   rows.push({
     ro: item.ro,
     piu: item.piu,
     upc: item.upc,
     project: item.project_title,
 
+    length: item.length,
+    lanes: item.lanes,
+    atms_status: item.atms_status,
+
     ofc_status: item.ofc?.status,
     ofc_length: item.ofc?.length,
     ofc_core: item.ofc?.core,
+
+    equipment: "",
+    operational_since: item.operational?.since,
+    operational_status: item.operational?.status,
 
     challan_month: "",
     challan_year: "",
@@ -169,7 +194,9 @@ async function exportToCSV() {
     ambulance_count: "",
 
     si_name: item.si_name,
-    spoc: item.spoc_name
+    si_address: item.si_address,
+    spoc_name: item.spoc_name,
+    spoc_email: item.spoc_email
   });
 
 }
