@@ -181,30 +181,39 @@ tbody.appendChild(tr);
     });  
 }
 
-  async function getMissingProjects() {
+async function getMissingProjects() {
 
-  const allowedStatuses = [ ... ];
+  const allowedStatuses = [
+    "CC Issued",
+    "PCC Issued, CC Pending",
+    "Under O&M through OMT/TOT/O&M Agency at Site",
+    "CC Issued & O&M by Construction Agency",
+    "O&M on Project no more required",
+    "O&M Through MoRTH/State PWD"
+  ];
 
-  // 1. Eligible projects
   const { data: master } = await supabaseClient
     .from("master_projects")
     .select("upc, project_title, implementing_ro, piu")
     .in("current_project_stage", allowedStatuses);
 
-  // 2. Filled projects
   const { data: filled } = await supabaseClient
     .from("atms_forms")
     .select("upc");
 
-  const filledUPC = new Set(filled.map(f => f.upc));
+  const filledUPC = new Set(
+    filled.map(f => f.upc).filter(Boolean)
+  );
 
-  // 3. Missing filter
   const missing = master.filter(p => !filledUPC.has(p.upc));
 
+  console.log("Total Eligible:", master.length);
+  console.log("Filled:", filledUPC.size);
   console.log("Missing Count:", missing.length);
   console.log("Missing List:", missing);
-
 }
+
+getMissingProjects();
 // ================= EXPORT CSV =================
 async function exportToCSV() {
 
