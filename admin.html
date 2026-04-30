@@ -54,25 +54,21 @@ Download Excel
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <script>
-
-// 🔑 SAME KEY use karo jo form me hai
+// ================= INIT SUPABASE =================
 const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
 
-
 // ================= LOAD DATA =================
-// ================= LOAD DATA =================
-async function loadData(){
+async function loadData() {
 
   const { data, error } = await supabaseClient
     .from("atms_forms")
     .select("*");
 
-  if(error){
+  if (error) {
     alert("Error loading data");
     console.log(error);
     return;
@@ -84,8 +80,6 @@ async function loadData(){
   data.forEach(row => {
 
     const monthly = row.monthly || [];
-
-    // 👉 show latest entry (last one)
     const last = monthly[monthly.length - 1] || {};
 
     const tr = document.createElement("tr");
@@ -105,18 +99,19 @@ async function loadData(){
 
     tbody.appendChild(tr);
   });
-
 }
 
-loadData();
-
-
 // ================= EXPORT CSV =================
-async function exportToCSV(){
+async function exportToCSV() {
 
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("atms_forms")
     .select("*");
+
+  if (error) {
+    alert("Error exporting");
+    return;
+  }
 
   let rows = [];
 
@@ -125,32 +120,31 @@ async function exportToCSV(){
     const monthly = item.monthly || [];
 
     monthly.forEach(m => {
-
       rows.push({
         ro: item.ro,
         piu: item.piu,
         upc: item.upc,
         project: item.project_title,
-
         ofc_status: item.ofc?.status,
         ofc_length: item.ofc?.length,
         ofc_core: item.ofc?.core,
-
         challan_month: m.challan_month,
         challan_year: m.challan_year,
         challan_count: m.challan_count,
-
         ambulance_month: m.ambulance_month,
         ambulance_year: m.ambulance_year,
         ambulance_count: m.ambulance_count,
-
         si_name: item.si_name,
         spoc: item.spoc_name
       });
-
     });
 
   });
+
+  if (rows.length === 0) {
+    alert("No data found");
+    return;
+  }
 
   const headers = Object.keys(rows[0]);
 
@@ -167,17 +161,9 @@ async function exportToCSV(){
   a.download = "ATMS_Data.csv";
   a.click();
 }
-  // DOWNLOAD
-  const blob = new Blob([csv.join("\n")], { type: "text/csv" });
-  const url = window.URL.createObjectURL(blob);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ATMS_Data.csv";
-  a.click();
-}
-
+// ================= INIT =================
+loadData();
 </script>
-
 </body>
 </html>
