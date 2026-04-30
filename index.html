@@ -847,8 +847,7 @@ document.querySelectorAll("#monthlyContainer .month-card").forEach(row => {
 
 });
 
-  // ================= VENDOR =================
-  const vendor = document.querySelector("input[placeholder='ABC Tech Pvt Ltd']").value;
+
     // ================= VENDOR =================
 const si_name = document.getElementById("siName").value;
 const si_address = document.getElementById("siAddress").value;
@@ -856,23 +855,25 @@ const spoc_name = document.getElementById("spocName").value;
 const spoc_email = document.getElementById("spocEmail").value;
 
   // ================= INSERT =================
+ const { error } = await supabaseClient
+  .from("atms_forms")
   .insert([{
-  ro,
-  piu,
-  upc,
-  project_title: project,
-  length,
-  lanes,
-  atms_status: atms,
-  ofc,
-  equipment,
-  operational,
-  monthly: monthlyData,   // ✅ correct
-  si_name,
-  si_address,
-  spoc_name,
-  spoc_email
-}]);
+    ro,
+    piu,
+    upc,
+    project_title: project,
+    length,
+    lanes,
+    atms_status: atms,
+    ofc,
+    equipment,
+    operational,
+    monthly: monthlyData,
+    si_name,
+    si_address,
+    spoc_name,
+    spoc_email
+  }]);
 
   if (error) {
     console.log(error);
