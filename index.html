@@ -695,6 +695,7 @@ document.addEventListener("DOMContentLoaded", addMonthlyRow);
   loadRODropdown();
 }
 
+    // ================= LOAD RO =================
     function loadRODropdown() {
 
   const roDropdown = document.getElementById("roDropdown");
@@ -713,32 +714,7 @@ document.addEventListener("DOMContentLoaded", addMonthlyRow);
   });
 }
     
-// ================= LOAD RO =================
-async function loadRO() {
 
-  const { data, error } = await supabaseClient
-    .from("master_projects")
-    .select("implementing_ro");
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  const uniqueRO = [...new Set(data.map(d => d.implementing_ro))];
-
-  const roDropdown = document.getElementById("roDropdown");
-  roDropdown.innerHTML = '<option value="">Select RO</option>';
-
-  uniqueRO.forEach(ro => {
-    if (ro) {
-      let option = document.createElement("option");
-      option.value = ro;
-      option.textContent = ro;
-      roDropdown.appendChild(option);
-    }
-  });
-}
 
 // ================= RO → PIU =================
 document.getElementById("roDropdown").addEventListener("change", function () {
