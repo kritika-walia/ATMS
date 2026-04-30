@@ -614,7 +614,7 @@ const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
-
+let masterData = [];
 function getRecentMonths() {
   const months = [
     "January","February","March","April","May","June",
@@ -666,6 +666,52 @@ function addMonthlyRow() {
 
 // page load pe ek row
 document.addEventListener("DOMContentLoaded", addMonthlyRow);
+
+    async function loadAllData() {
+
+  const allowedStatuses = [
+    "CC Issued",
+    "PCC Issued, CC Pending",
+    "Under O&M through OMT/TOT/O&M Agency at Site",
+    "CC Issued & O&M by Construction Agency",
+    "O&M on Project no more required",
+    "O&M Through MoRTH/State PWD"
+  ];
+
+  const { data, error } = await supabaseClient
+    .from("master_projects")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  // 🔥 Filter once here
+  masterData = data.filter(d =>
+    allowedStatuses.includes(d.current_project_stage)
+  );
+
+  loadRODropdown();
+}
+
+    function loadRODropdown() {
+
+  const roDropdown = document.getElementById("roDropdown");
+
+  const uniqueRO = [...new Set(masterData.map(d => d.implementing_ro))];
+
+  roDropdown.innerHTML = '<option value="">Select RO</option>';
+
+  uniqueRO.forEach(ro => {
+    if (ro) {
+      let option = document.createElement("option");
+      option.value = ro;
+      option.textContent = ro;
+      roDropdown.appendChild(option);
+    }
+  });
+}
     
 // ================= LOAD RO =================
 async function loadRO() {
@@ -695,16 +741,13 @@ async function loadRO() {
 }
 
 // ================= RO → PIU =================
-document.getElementById("roDropdown").addEventListener("change", async function () {
+document.getElementById("roDropdown").addEventListener("change", function () {
 
   const selectedRO = this.value;
 
-  const { data } = await supabaseClient
-    .from("master_projects")
-    .select("piu")
-    .eq("implementing_ro", selectedRO);
+  const filtered = masterData.filter(d => d.implementing_ro === selectedRO);
 
-  const uniquePIU = [...new Set(data.map(d => d.piu))];
+  const uniquePIU = [...new Set(filtered.map(d => d.piu))];
 
   const piuDropdown = document.getElementById("piuDropdown");
   piuDropdown.innerHTML = '<option value="">Select PIU</option>';
@@ -720,31 +763,17 @@ document.getElementById("roDropdown").addEventListener("change", async function 
 
   document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
 });
-
 // ================= PIU → UPC =================
-document.getElementById("piuDropdown").addEventListener("change", async function () {
+document.getElementById("piuDropdown").addEventListener("change", function () {
 
   const selectedPIU = this.value;
 
-  const allowedStatuses = [
-    "CC Issued",
-    "PCC Issued, CC Pending",
-    "Under O&M through OMT/TOT/O&M Agency at Site",
-    "CC Issued & O&M by Construction Agency",
-    "O&M on Project no more required",
-    "O&M Through MoRTH/State PWD"
-  ];
-
-  const { data } = await supabaseClient
-    .from("master_projects")
-    .select("upc")
-    .eq("piu", selectedPIU)
-    .in("current_project_stage", allowedStatuses);
+  const filtered = masterData.filter(d => d.piu === selectedPIU);
 
   const upcDropdown = document.getElementById("upcDropdown");
   upcDropdown.innerHTML = '<option value="">Select UPC</option>';
 
-  data.forEach(item => {
+  filtered.forEach(item => {
     if (item.upc) {
       let option = document.createElement("option");
       option.value = item.upc;
@@ -753,29 +782,23 @@ document.getElementById("piuDropdown").addEventListener("change", async function
     }
   });
 });
-
     
 // ================= UPC → AUTO FILL =================
-document.getElementById("upcDropdown").addEventListener("change", async function () {
+document.getElementById("upcDropdown").addEventListener("change", function () {
 
   const selectedUPC = this.value;
-    
-  const { data } = await supabaseClient
-    .from("master_projects")
-    .select("*")
-    .eq("upc", selectedUPC)
-    .single();
 
-  if (data) {
-    document.querySelector("[name='length']").value = data.length || "";
-    document.getElementById("projectTitle").value = data.project_title || "";
-    document.querySelector("[name='lanes']").value = data.lanes || "";
+  const project = masterData.find(d => d.upc === selectedUPC);
+
+  if (project) {
+    document.querySelector("[name='length']").value = project.length || "";
+    document.getElementById("projectTitle").value = project.project_title || "";
+    document.querySelector("[name='lanes']").value = project.lanes || "";
   }
-
 });
 
 // INIT
-loadRO();
+    loadAllData();
 </script>
 
     <script>
