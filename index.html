@@ -874,14 +874,11 @@ const spoc_email = document.getElementById("spocEmail").value;
   ofc,
   equipment,
   operational,
-
-  monthly: monthlyData,   // ✅ FIX
-
+  monthly: monthlyData,   // ✅ correct
   si_name,
   si_address,
   spoc_name,
   spoc_email
-
 }]);
 
   if (error) {
@@ -891,7 +888,7 @@ const spoc_email = document.getElementById("spocEmail").value;
     alert("✅ Data Saved Successfully!");
     location.reload();
   }
-}
+
 </script>
 
 <script>
