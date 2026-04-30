@@ -465,45 +465,43 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
   <div id="monthlyContainer"></div>
 
   <!-- 👇 HIDDEN TEMPLATE -->
-  <div id="monthlyTemplate" style="display:none;">
+  <div class="month-card">
+  <div class="row g-4">
 
-    <div class="month-card">
-      <div class="row g-4">
+    <!-- 🔹 ROW 1 (TOP 3) -->
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Month (Challans)</label>
+      <select class="form-select challan-month"></select>
+    </div>
 
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Month (Challans)</label>
-          <select class="form-select challan-month"></select>
-        </div>
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Year</label>
+      <select class="form-select challan-year"></select>
+    </div>
 
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Year</label>
-          <input type="number" class="form-control challan-year">
-        </div>
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Challans Created</label>
+      <input type="number" class="form-control challan-count">
+    </div>
 
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Challans Created</label>
-          <input type="number" class="form-control challan-count">
-        </div>
+    <!-- 🔹 ROW 2 (BOTTOM 3) -->
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Month (Ambulance)</label>
+      <select class="form-select ambulance-month"></select>
+    </div>
 
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Month (Ambulance)</label>
-          <select class="form-select ambulance-month"></select>
-        </div>
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Year</label>
+      <select class="form-select ambulance-year"></select>
+    </div>
 
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Year</label>
-          <input type="number" class="form-control ambulance-year">
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label fw-semibold">Ambulance Dispatch Support Provided</label>
-          <input type="number" class="form-control ambulance-count">
-        </div>
-
-      </div>
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Ambulance Dispatch Support Provided</label>
+      <input type="number" class="form-control ambulance-count">
     </div>
 
   </div>
+</div>
 
   <div class="text-end mt-3">
     <button type="button" class="btn btn-primary" onclick="addMonthlyRow()">+ Add Month</button>
