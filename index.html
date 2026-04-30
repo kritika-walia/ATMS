@@ -617,9 +617,9 @@ function getRecentMonths() {
   const current = new Date().getMonth();
 
   return [
-    months[current],
     months[(current - 1 + 12) % 12],
-    months[(current - 2 + 12) % 12]
+    months[(current - 2 + 12) % 12],
+    months[(current - 3 + 12) % 12]
   ];
 }
     function setYears(select) {
