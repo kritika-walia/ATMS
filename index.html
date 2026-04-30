@@ -757,7 +757,7 @@ document.getElementById("upcDropdown").addEventListener("change", async function
 
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
-    document.querySelector("input[placeholder='NH-48 Delhi-Gurgaon']").value = data.project_title || "";
+    document.getElementById("projectTitle").value = data.project_title || "";
     document.querySelector("[name='lanes']").value = data.lanes || "";
   }
 
