@@ -624,10 +624,6 @@ function getRecentMonths() {
   select.innerHTML = `<option selected>${currentYear}</option>`;
 }
 
-  select.innerHTML = years
-    .map(y => `<option ${y === currentYear ? "selected" : ""}>${y}</option>`)
-    .join("");
-} 
 function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
