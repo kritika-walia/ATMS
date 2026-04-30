@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
   try {
 
     // 🔥 STEP 1: API call
-    const apiResponse = await fetch("YOUR_API_URL");
+    const apiResponse = await fetch("https://evhencgqdjwzqghaimut.supabase.co/rest/v1/");
     const apiDataList = await apiResponse.json();
 
     let updatedCount = 0;
