@@ -863,22 +863,26 @@ const spoc_name = document.getElementById("spocName").value;
 const spoc_email = document.getElementById("spocEmail").value;
 
   // ================= INSERT =================
-  const { error } = await supabaseClient
-    .from("atms_forms")
-    .insert([{
-      ro,
-      piu,
-      upc,
-      project_title: project,
-      length,
-      lanes,
-      atms_status: atms,
-      ofc,
-      equipment,
-      operational,
-      monthlyData,
-      vendor
-    }]);
+  .insert([{
+  ro,
+  piu,
+  upc,
+  project_title: project,
+  length,
+  lanes,
+  atms_status: atms,
+  ofc,
+  equipment,
+  operational,
+
+  monthly: monthlyData,   // ✅ FIX
+
+  si_name,
+  si_address,
+  spoc_name,
+  spoc_email
+
+}]);
 
   if (error) {
     console.log(error);
