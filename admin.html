@@ -141,48 +141,41 @@ async function loadData() {
 
   monthly.forEach(m => {
 
-    const tr = document.createElement("tr");
+ const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${row.ro || ""}</td>
-      <td>${row.piu || ""}</td>
-      <td>${row.upc || ""}</td>
-      <td>${row.project_title || ""}</td>
+tr.innerHTML = `
+  <td>${row.ro || ""}</td>
+  <td>${row.piu || ""}</td>
+  <td>${row.upc || ""}</td>
+  <td>${row.project_title || ""}</td>
 
-      <td>${row.length || ""}</td>
-      <td>${row.lanes || ""}</td>
-      <td>${row.atms_status || ""}</td>
+  <td>${row.length || ""}</td>
+  <td>${row.lanes || ""}</td>
+  <td>${row.atms_status || ""}</td>
 
-      <td>${row.ofc?.status || ""}</td>
-      <td>${row.ofc?.length || ""}</td>
-      <td>${row.ofc?.core || ""}</td>
+  <td>${row.ofc?.status || ""}</td>
+  <td>${row.ofc?.length || ""}</td>
+  <td>${row.ofc?.core || ""}</td>
 
-      <td>${equipmentText}</td>
+  <td>${equipmentText}</td>
 
-      <td>${row.operational?.since || ""}</td>
-      <td>${row.operational?.status || ""}</td>
+  <td>${row.operational?.since || ""}</td>
+  <td>${row.operational?.status || ""}</td>
 
-      <td>${m.challan_month || ""}</td>
-      <td>${m.challan_count || ""}</td>
+  <td>${m.challan_month || ""}</td>
+  <td>${m.challan_count || ""}</td>
 
-      <td>${m.ambulance_month || ""}</td>
-      <td>${m.ambulance_count || ""}</td>
+  <td>${m.ambulance_month || ""}</td>
+  <td>${m.ambulance_count || ""}</td>
 
-      <td>${row.si_name || ""}</td>
-      <td>${row.spoc_name || ""}</td>
-      <td>${row.spoc_email || ""}</td>
-      <td>${row.spoc_phone || ""}</td>
-      <td>${row.si_address || ""}</td>
-      
-    `;
+  <td>${row.si_name || ""}</td>
+  <td>${row.spoc_name || ""}</td>
+  <td>${row.spoc_email || ""}</td>
+  <td>${row.spoc_phone || ""}</td>
+  <td>${row.si_address || ""}</td>
+`;
 
-    tbody.appendChild(tr);
-
-});
-    `;
-
-});
-}
+tbody.appendChild(tr);
 // ================= EXPORT CSV =================
 async function exportToCSV() {
 
