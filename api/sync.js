@@ -17,18 +17,20 @@ module.exports = async function handler(req, res) {
 
     console.log("DATA LENGTH:", apiDataList.length);
 
-    for (let item of apiDataList) {
+if (!Array.isArray(apiDataList)) {
+  console.log("API RESPONSE:", json);
+  throw new Error("API data is not iterable");
+}
 
-      console.log("Updating:", item.upc);
+for (let item of apiDataList) {
 
-      await supabase
-        .from("master_projects")
-        .update({
-          current_project_stage: item.current_project_stage
-        })
-        .eq("upc", item.upc);
-    }
-
+  await supabase
+    .from("master_projects")
+    .update({
+      current_project_stage: item.current_project_stage
+    })
+    .eq("upc", item.upc);
+}
     return res.status(200).json({ success: true });
 
   } catch (error) {
