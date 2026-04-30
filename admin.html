@@ -81,6 +81,7 @@ Download Excel
         <th>Contact Person</th>
         <th>Email</th>
         <th>Address</th>
+        <th>Phone</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -120,27 +121,25 @@ async function loadData() {
 
   data.forEach(row => {
 
-    // ✅ FIX monthly type
-    let monthly = row.monthly;
+  let monthly = row.monthly;
 
-    if (typeof monthly === "string") {
-      try {
-        monthly = JSON.parse(monthly);
-      } catch {
-        monthly = [];
-      }
+  if (typeof monthly === "string") {
+    try {
+      monthly = JSON.parse(monthly);
+    } catch {
+      monthly = [];
     }
+  }
 
-    if (!Array.isArray(monthly)) monthly = [];
+  if (!Array.isArray(monthly) || monthly.length === 0) {
+    monthly = [{}]; // fallback
+  }
 
-    const last = monthly.sort((a, b) => {
-      return new Date(a.challan_year, monthMap[a.challan_month]) -
-             new Date(b.challan_year, monthMap[b.challan_month]);
-    }).slice(-1)[0] || {};
+  const equipmentText = (row.equipment || [])
+    .map(e => `${e.component}: ${e.working}/${e.installed}`)
+    .join(" | ");
 
-    const equipmentText = (row.equipment || [])
-      .map(e => `${e.component}: ${e.working}/${e.installed}`)
-      .join(" | ");
+  monthly.forEach(m => {
 
     const tr = document.createElement("tr");
 
@@ -156,29 +155,92 @@ async function loadData() {
 
       <td>${row.ofc?.status || ""}</td>
       <td>${row.ofc?.length || ""}</td>
-      <td>${row.ofc && row.ofc.core ? row.ofc.core : "-"}</td>
+      <td>${row.ofc?.core || ""}</td>
 
       <td>${equipmentText}</td>
 
       <td>${row.operational?.since || ""}</td>
       <td>${row.operational?.status || ""}</td>
 
-      <td>${last.challan_month || ""}</td>
-      <td>${last.challan_count || ""}</td>
+      <td>${m.challan_month || ""}</td>
+      <td>${m.challan_count || ""}</td>
 
-      <td>${last.ambulance_month || ""}</td>
-      <td>${last.ambulance_count || ""}</td>
+      <td>${m.ambulance_month || ""}</td>
+      <td>${m.ambulance_count || ""}</td>
 
       <td>${row.si_name || ""}</td>
       <td>${row.spoc_name || ""}</td>
       <td>${row.spoc_email || ""}</td>
+      <td>${row.spoc_phone || ""}</td>
+      data.forEach(row => {
+
+  let monthly = row.monthly;
+
+  if (typeof monthly === "string") {
+    try {
+      monthly = JSON.parse(monthly);
+    } catch {
+      monthly = [];
+    }
+  }
+
+  if (!Array.isArray(monthly) || monthly.length === 0) {
+    monthly = [{}]; // fallback
+  }
+
+  const equipmentText = (row.equipment || [])
+    .map(e => `${e.component}: ${e.working}/${e.installed}`)
+    .join(" | ");
+
+  monthly.forEach(m => {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${row.ro || ""}</td>
+      <td>${row.piu || ""}</td>
+      <td>${row.upc || ""}</td>
+      <td>${row.project_title || ""}</td>
+
+      <td>${row.length || ""}</td>
+      <td>${row.lanes || ""}</td>
+      <td>${row.atms_status || ""}</td>
+
+      <td>${row.ofc?.status || ""}</td>
+      <td>${row.ofc?.length || ""}</td>
+      <td>${row.ofc?.core || ""}</td>
+
+      <td>${equipmentText}</td>
+
+      <td>${row.operational?.since || ""}</td>
+      <td>${row.operational?.status || ""}</td>
+
+      <td>${m.challan_month || ""}</td>
+      <td>${m.challan_count || ""}</td>
+
+      <td>${m.ambulance_month || ""}</td>
+      <td>${m.ambulance_count || ""}</td>
+
+      <td>${row.si_name || ""}</td>
+      <td>${row.spoc_name || ""}</td>
+      <td>${row.spoc_email || ""}</td>
+      <td>${row.spoc_phone || ""}</td>
       <td>${row.si_address || ""}</td>
-      
+      <td>${row.spoc_phone || ""}</td>
     `;
 
     tbody.appendChild(tr);
+
   });
 
+});
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+});
 }
 // ================= EXPORT CSV =================
 async function exportToCSV() {
