@@ -870,6 +870,7 @@ const spoc_name = document.getElementById("spocName").value;
 const spoc_email = document.getElementById("spocEmail").value;
 const spoc_phone = document.getElementById("spocPhone").value;
 
+    console.log("PHONE:", spoc_phone);
   // ================= INSERT =================
  const { error } = await supabaseClient
   .from("atms_forms")
@@ -888,7 +889,8 @@ const spoc_phone = document.getElementById("spocPhone").value;
     si_name,
     si_address,
     spoc_name,
-    spoc_email
+    spoc_email,
+    spoc_phone 
   }]);
 
   if (error) {
