@@ -693,23 +693,11 @@ document.getElementById("piuDropdown").addEventListener("change", async function
   });
 });
 
+    
 // ================= UPC → AUTO FILL =================
 document.getElementById("upcDropdown").addEventListener("change", async function () {
 
   const selectedUPC = this.value;
-const allowedStatuses = [
-  "CC issued",
-  "PCC Issued, CC Pending",
-  "Under O&M through OMT/TOT/O&M Agency at Site",
-  "CC Issued & O&M by Construction Agency",
-  "O&M on Project no more required",
-  "O&M Through MoRTH/State PWD"
-];
-
-const { data, error } = await supabaseClient
-  .from("master_projects")
-  .select("*")
-  .in("current_project_stage", allowedStatuses);
     
   const { data } = await supabaseClient
     .from("master_projects")
