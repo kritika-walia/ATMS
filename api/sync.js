@@ -20,12 +20,12 @@ module.exports = async function handler(req, res) {
 
       if (!item.upc) continue; // safety check
 
-      await supabase
-        .from("master_projects")
-        .update({
-          current_project_stage: item.current_project_stage || null
-        })
-        .eq("upc", item.upc);
+     await supabase
+  .from("master_projects")
+  .upsert({
+    upc: item.upc,
+    current_project_stage: item.current_project_stage
+  }, { onConflict: "upc" });
 
     }
 
