@@ -119,25 +119,60 @@ async function exportToCSV() {
 
     const monthly = item.monthly || [];
 
-    monthly.forEach(m => {
-      rows.push({
-        ro: item.ro,
-        piu: item.piu,
-        upc: item.upc,
-        project: item.project_title,
-        ofc_status: item.ofc?.status,
-        ofc_length: item.ofc?.length,
-        ofc_core: item.ofc?.core,
-        challan_month: m.challan_month,
-        challan_year: m.challan_year,
-        challan_count: m.challan_count,
-        ambulance_month: m.ambulance_month,
-        ambulance_year: m.ambulance_year,
-        ambulance_count: m.ambulance_count,
-        si_name: item.si_name,
-        spoc: item.spoc_name
-      });
+    if (Array.isArray(monthly)) {
+
+  monthly.forEach(m => {
+
+    rows.push({
+      ro: item.ro,
+      piu: item.piu,
+      upc: item.upc,
+      project: item.project_title,
+
+      ofc_status: item.ofc?.status,
+      ofc_length: item.ofc?.length,
+      ofc_core: item.ofc?.core,
+
+      challan_month: m.challan_month,
+      challan_year: m.challan_year,
+      challan_count: m.challan_count,
+
+      ambulance_month: m.ambulance_month,
+      ambulance_year: m.ambulance_year,
+      ambulance_count: m.ambulance_count,
+
+      si_name: item.si_name,
+      spoc: item.spoc_name
     });
+
+  });
+
+} else {
+
+  // fallback (agar monthly empty ya object hai)
+  rows.push({
+    ro: item.ro,
+    piu: item.piu,
+    upc: item.upc,
+    project: item.project_title,
+
+    ofc_status: item.ofc?.status,
+    ofc_length: item.ofc?.length,
+    ofc_core: item.ofc?.core,
+
+    challan_month: "",
+    challan_year: "",
+    challan_count: "",
+
+    ambulance_month: "",
+    ambulance_year: "",
+    ambulance_count: "",
+
+    si_name: item.si_name,
+    spoc: item.spoc_name
+  });
+
+}
 
   });
 
