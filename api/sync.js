@@ -18,14 +18,13 @@ module.exports = async function handler(req, res) {
     // 🔥 STEP 2: Loop & UPDATE only
     for (let item of apiDataList) {
 
-      if (!item.upc) continue;
+  await supabase
+    .from("master_projects")
+    .update({
+      current_project_stage: item.current_project_stage
+    })
+    .eq("upc", item.upc);
 
-      const { error } = await supabase
-        .from("master_projects")
-        .update({
-          current_project_stage: item.current_project_stage || null
-        })
-        .eq("upc", item.upc);
 
       if (error) {
         console.log("Update error:", error);
@@ -45,4 +44,7 @@ module.exports = async function handler(req, res) {
       error: error.message
     });
   }
+console.log("Updating:", item.upc);
 };
+
+
