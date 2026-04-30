@@ -181,6 +181,59 @@ tbody.appendChild(tr);
     });  
 }
 
+async function fetchAllMaster(allowedStatuses) {
+  let allData = [];
+  let from = 0;
+  const batchSize = 1000;
+
+  while (true) {
+    const { data, error } = await supabaseClient
+      .from("master_projects")
+      .select("upc, project_title, implementing_ro, piu")
+      .in("current_project_stage", allowedStatuses)
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      console.log("Master fetch error:", error);
+      break;
+    }
+
+    allData = allData.concat(data);
+
+    if (data.length < batchSize) break;
+
+    from += batchSize;
+  }
+
+  return allData;
+}
+
+async function fetchAllFilled() {
+  let allData = [];
+  let from = 0;
+  const batchSize = 1000;
+
+  while (true) {
+    const { data, error } = await supabaseClient
+      .from("atms_forms")
+      .select("upc")
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      console.log("Filled fetch error:", error);
+      break;
+    }
+
+    allData = allData.concat(data);
+
+    if (data.length < batchSize) break;
+
+    from += batchSize;
+  }
+
+  return allData;
+}
+
 async function getMissingProjects() {
 
   const allowedStatuses = [
@@ -192,21 +245,12 @@ async function getMissingProjects() {
     "O&M Through MoRTH/State PWD"
   ];
 
-  const { data: master } = await supabaseClient
-  .from("master_projects")
-  .select("upc, project_title, implementing_ro, piu")
-  .in("current_project_stage", allowedStatuses)
-  .range(0, 2000);   // 🔥 FIX
-
-  const { data: filled } = await supabaseClient
-  .from("atms_forms")
-  .select("upc")
-  .range(0, 2000);
+  const master = await fetchAllMaster(allowedStatuses);
+  const filled = await fetchAllFilled();
 
   const filledUPC = new Set(
     filled.map(f => f.upc).filter(Boolean)
   );
-
 
   const missing = master.filter(p => !filledUPC.has(p.upc));
 
