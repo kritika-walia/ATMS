@@ -572,6 +572,18 @@ function getRecentMonths() {
   ];
 }
 
+function setYears(select) {
+  const currentYear = 2026; // 👈 default
+
+  let years = [];
+
+  for (let i = currentYear - 2; i <= currentYear + 2; i++) {
+    years.push(i);
+  }
+
+  select.innerHTML = years.map(y => `<option ${y === currentYear ? "selected" : ""}>${y}</option>`).join("");
+}
+    
 function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
@@ -585,6 +597,10 @@ function addMonthlyRow() {
 
   newRow.querySelectorAll("select").forEach(select => {
     select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
+
+      newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
+  setYears(select);
+});
   });
 
   document.getElementById("monthlyContainer").appendChild(newRow);
@@ -705,6 +721,18 @@ loadRO();
 </script>
 
     <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+  const firstRow = document.querySelector(".month-card");
+
+  setMonths(firstRow);
+
+  firstRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
+    setYears(select);
+  });
+
+});
 document.querySelectorAll(".eq-table tbody tr").forEach(row => {
 
   const installed = row.querySelector(".installed-count");
