@@ -588,19 +588,25 @@ function setYears(select) {
 function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
+
+  if (!template) {
+    console.error("Template not found ❌");
+    return;
+  }
+
   const newRow = template.cloneNode(true);
 
-  // reset values
+  // reset inputs
   newRow.querySelectorAll("input").forEach(i => i.value = "");
 
-  // months
+  // months set karo
   const months = getRecentMonths();
 
   newRow.querySelectorAll(".challan-month, .ambulance-month").forEach(select => {
     select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
   });
 
-  // year dropdown
+  // years set karo
   newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
     setYears(select);
   });
