@@ -17,6 +17,25 @@ body{
   border-radius:10px;
   margin-bottom:20px;
 }
+
+  .table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 70vh;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+table {
+  min-width: 1800px;
+}
+
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
 </style>
 </head>
 
@@ -30,30 +49,43 @@ body{
 Download Excel
 </button>
 
-<div class="table-responsive">
-<table class="table table-bordered table-striped" id="dataTable">
+<div class="table-wrapper">
+  <table class="table table-bordered table-hover" id="dataTable">
+    <thead class="table-dark sticky-header">
+      <tr>
+        <th>RO</th>
+        <th>PIU</th>
+        <th>UPC</th>
+        <th>Project</th>
 
-<thead>
-<tr>
-<th>RO</th>
-<th>PIU</th>
-<th>UPC</th>
-<th>Project</th>
-<th>OFC Status</th>
-<th>OFC Length</th>
-<th>OFC Core</th>
-<th>Challan</th>
-<th>Ambulance</th>
-<th>Vendor</th>
-</tr>
-</thead>
+        <th>Length</th>
+        <th>Lanes</th>
+        <th>ATMS</th>
 
-<tbody></tbody>
+        <th>OFC Status</th>
+        <th>OFC Length</th>
+        <th>OFC Core</th>
 
-</table>
+        <th>Equipment</th>
+
+        <th>Operational Since</th>
+        <th>Status</th>
+
+        <th>Challan Month</th>
+        <th>Challan Count</th>
+
+        <th>Ambulance Month</th>
+        <th>Ambulance Count</th>
+
+        <th>Vendor</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 // ================= INIT SUPABASE =================
 const supabaseClient = window.supabase.createClient(
@@ -62,151 +94,113 @@ const supabaseClient = window.supabase.createClient(
 );
 
 // ================= LOAD DATA =================
-async function loadData() {
+const monthMap = {
+  January: 0, February: 1, March: 2, April: 3,
+  May: 4, June: 5, July: 6, August: 7,
+  September: 8, October: 9, November: 10, December: 11
+};
 
-  const { data, error } = await supabaseClient
-    .from("atms_forms")
-    .select("*");
+data.forEach(row => {
 
-  if (error) {
-    alert("Error loading data");
-    console.log(error);
-    return;
-  }
+  const monthly = row.monthly || [];
 
-  const tbody = document.querySelector("#dataTable tbody");
-  tbody.innerHTML = "";
+  const last = monthly.sort((a, b) => {
+    return new Date(a.challan_year, monthMap[a.challan_month]) -
+           new Date(b.challan_year, monthMap[b.challan_month]);
+  }).slice(-1)[0] || {};
 
-  data.forEach(row => {
+  const equipmentText = (row.equipment || [])
+    .map(e => `${e.component}: ${e.working}/${e.installed}`)
+    .join(" | ");
 
-    const monthly = row.monthly || [];
-    const last = monthly[monthly.length - 1] || {};
+  const tr = document.createElement("tr");
 
-    const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${row.ro || ""}</td>
+    <td>${row.piu || ""}</td>
+    <td>${row.upc || ""}</td>
+    <td>${row.project_title || ""}</td>
 
-    tr.innerHTML = `
-      <td>${row.ro || ""}</td>
-      <td>${row.piu || ""}</td>
-      <td>${row.upc || ""}</td>
-      <td>${row.project_title || ""}</td>
-      <td>${row.ofc?.status || ""}</td>
-      <td>${row.ofc?.length || ""}</td>
-      <td>${row.ofc?.core || ""}</td>
-      <td>${last.challan_count || ""}</td>
-      <td>${last.ambulance_count || ""}</td>
-      <td>${row.si_name || ""}</td>
-    `;
+    <td>${row.length || ""}</td>
+    <td>${row.lanes || ""}</td>
+    <td>${row.atms_status || ""}</td>
 
-    tbody.appendChild(tr);
-  });
-}
+    <td>${row.ofc?.status || ""}</td>
+    <td>${row.ofc?.length || ""}</td>
+    <td>${row.ofc?.core || ""}</td>
 
+    <td>${equipmentText}</td>
+
+    <td>${row.operational?.since || ""}</td>
+    <td>${row.operational?.status || ""}</td>
+
+    <td>${last.challan_month || ""}</td>
+    <td>${last.challan_count || ""}</td>
+
+    <td>${last.ambulance_month || ""}</td>
+    <td>${last.ambulance_count || ""}</td>
+
+    <td>${row.si_name || ""}</td>
+    <td>${row.spoc_email || ""}</td>
+  `;
+
+  tbody.appendChild(tr);
+});
 // ================= EXPORT CSV =================
 async function exportToCSV() {
 
-  const { data, error } = await supabaseClient
+  const { data } = await supabaseClient
     .from("atms_forms")
     .select("*");
-
-  if (error) {
-    alert("Error exporting");
-    return;
-  }
 
   let rows = [];
 
   data.forEach(item => {
 
+    const equipmentText = (item.equipment || [])
+      .map(e => `${e.component}: ${e.working}/${e.installed}`)
+      .join(" | ");
+
     const monthly = item.monthly || [];
 
-   if (Array.isArray(monthly) && monthly.length) {
+    monthly.forEach(m => {
 
-  monthly.forEach(m => {
+      rows.push({
+        RO: item.ro,
+        PIU: item.piu,
+        UPC: item.upc,
+        Project: item.project_title,
 
-    rows.push({
-      ro: item.ro,
-      piu: item.piu,
-      upc: item.upc,
-      project: item.project_title,
+        Length: item.length,
+        Lanes: item.lanes,
+        ATMS_Status: item.atms_status,
 
-      length: item.length,
-      lanes: item.lanes,
-      atms_status: item.atms_status,
+        OFC_Status: item.ofc?.status,
+        OFC_Length: item.ofc?.length,
+        OFC_Core: item.ofc?.core,
 
-      ofc_status: item.ofc?.status,
-      ofc_length: item.ofc?.length,
-      ofc_core: item.ofc?.core,
+        Equipment: equipmentText,
 
-      // 🔥 EQUIPMENT (convert array → string)
-      equipment: (item.equipment || [])
-        .map(e => `${e.component}: ${e.working}/${e.installed}`)
-        .join(" | "),
+        Operational_Since: item.operational?.since,
+        Operational_Status: item.operational?.status,
 
-      // 🔥 OPERATIONAL
-      operational_since: item.operational?.since,
-      operational_status: item.operational?.status,
+        Challan_Month: m.challan_month,
+        Challan_Year: m.challan_year,
+        Challan_Count: m.challan_count,
 
-      // 🔥 MONTHLY
-      challan_month: m.challan_month,
-      challan_year: m.challan_year,
-      challan_count: m.challan_count,
+        Ambulance_Month: m.ambulance_month,
+        Ambulance_Year: m.ambulance_year,
+        Ambulance_Count: m.ambulance_count,
 
-      ambulance_month: m.ambulance_month,
-      ambulance_year: m.ambulance_year,
-      ambulance_count: m.ambulance_count,
-
-      // 🔥 VENDOR
-      si_name: item.si_name,
-      si_address: item.si_address,
-      spoc_name: item.spoc_name,
-      spoc_email: item.spoc_email
+        Vendor: item.si_name,
+        Address: item.si_address,
+        SPOC: item.spoc_name,
+        Email: item.spoc_email
+      });
 
     });
 
   });
-
-} else {
-
-  rows.push({
-    ro: item.ro,
-    piu: item.piu,
-    upc: item.upc,
-    project: item.project_title,
-
-    length: item.length,
-    lanes: item.lanes,
-    atms_status: item.atms_status,
-
-    ofc_status: item.ofc?.status,
-    ofc_length: item.ofc?.length,
-    ofc_core: item.ofc?.core,
-
-    equipment: "",
-    operational_since: item.operational?.since,
-    operational_status: item.operational?.status,
-
-    challan_month: "",
-    challan_year: "",
-    challan_count: "",
-
-    ambulance_month: "",
-    ambulance_year: "",
-    ambulance_count: "",
-
-    si_name: item.si_name,
-    si_address: item.si_address,
-    spoc_name: item.spoc_name,
-    spoc_email: item.spoc_email
-  });
-
-}
-
-  });
-
-  if (rows.length === 0) {
-    alert("No data found");
-    return;
-  }
 
   const headers = Object.keys(rows[0]);
 
@@ -216,14 +210,13 @@ async function exportToCSV() {
   ].join("\n");
 
   const blob = new Blob([csv], { type: "text/csv" });
-  const url = window.URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "ATMS_Data.csv";
+  a.download = `ATMS_Report_${new Date().toISOString().split("T")[0]}.csv`;
   a.click();
 }
-
 // ================= INIT =================
 loadData();
 </script>
