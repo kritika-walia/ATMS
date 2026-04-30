@@ -697,14 +697,7 @@ document.getElementById("piuDropdown").addEventListener("change", async function
 document.getElementById("upcDropdown").addEventListener("change", async function () {
 
   const selectedUPC = this.value;
-
-  const { data } = await supabaseClient
-    .from("master_projects")
-    .select("*")
-    .eq("upc", selectedUPC)
-    .single();
-
-    const allowedStatuses = [
+const allowedStatuses = [
   "CC issued",
   "PCC Issued, CC Pending",
   "Under O&M through OMT/TOT/O&M Agency at Site",
@@ -712,6 +705,18 @@ document.getElementById("upcDropdown").addEventListener("change", async function
   "O&M on Project no more required",
   "O&M Through MoRTH/State PWD"
 ];
+
+const { data, error } = await supabaseClient
+  .from("master_projects")
+  .select("*")
+  .in("current_project_stage", allowedStatuses);
+    
+  const { data } = await supabaseClient
+    .from("master_projects")
+    .select("*")
+    .eq("upc", selectedUPC)
+    .single();
+
 
 const filteredData = data.filter(item =>
   allowedStatuses.includes(item.current_project_stage)
