@@ -623,13 +623,14 @@ function setYears(select) {
 
   let years = [];
 
-  for (let i = currentYear - 2; i <= currentYear + 2; i++)
+  for (let i = currentYear - 2; i <= currentYear + 2; i++) {
     years.push(i);
   }
 
-  select.innerHTML = years.map(y => `<option ${y === currentYear ? "selected" : ""}>${y}</option>`).join("");
-}
-    
+  select.innerHTML = years
+    .map(y => `<option ${y === currentYear ? "selected" : ""}>${y}</option>`)
+    .join("");
+} 
 function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
