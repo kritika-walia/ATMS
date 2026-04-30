@@ -65,6 +65,7 @@ const supabaseClient = window.supabase.createClient(
 
 
 // ================= LOAD DATA =================
+// ================= LOAD DATA =================
 async function loadData(){
 
   const { data, error } = await supabaseClient
@@ -82,6 +83,11 @@ async function loadData(){
 
   data.forEach(row => {
 
+    const monthly = row.monthly || [];
+
+    // 👉 show latest entry (last one)
+    const last = monthly[monthly.length - 1] || {};
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
@@ -92,9 +98,9 @@ async function loadData(){
       <td>${row.ofc?.status || ""}</td>
       <td>${row.ofc?.length || ""}</td>
       <td>${row.ofc?.core || ""}</td>
-      <td>${row.monthly?.challan_count || ""}</td>
-      <td>${row.monthly?.ambulance_count || ""}</td>
-      <td>${row.vendor || ""}</td>
+      <td>${last.challan_count || ""}</td>
+      <td>${last.ambulance_count || ""}</td>
+      <td>${row.si_name || ""}</td>
     `;
 
     tbody.appendChild(tr);
@@ -112,33 +118,55 @@ async function exportToCSV(){
     .from("atms_forms")
     .select("*");
 
-  let csv = [];
+  let rows = [];
 
-  // HEADER
-  csv.push([
-    "RO","PIU","UPC","Project",
-    "OFC Status","OFC Length","OFC Core",
-    "Challan","Ambulance","Vendor"
-  ].join(","));
+  data.forEach(item => {
 
-  // DATA
-  data.forEach(row => {
+    const monthly = item.monthly || [];
 
-    csv.push([
-      row.ro || "",
-      row.piu || "",
-      row.upc || "",
-      row.project_title || "",
-      row.ofc?.status || "",
-      row.ofc?.length || "",
-      row.ofc?.core || "",
-      row.monthly?.challan_count || "",
-      row.monthly?.ambulance_count || "",
-      row.vendor || ""
-    ].join(","));
+    monthly.forEach(m => {
+
+      rows.push({
+        ro: item.ro,
+        piu: item.piu,
+        upc: item.upc,
+        project: item.project_title,
+
+        ofc_status: item.ofc?.status,
+        ofc_length: item.ofc?.length,
+        ofc_core: item.ofc?.core,
+
+        challan_month: m.challan_month,
+        challan_year: m.challan_year,
+        challan_count: m.challan_count,
+
+        ambulance_month: m.ambulance_month,
+        ambulance_year: m.ambulance_year,
+        ambulance_count: m.ambulance_count,
+
+        si_name: item.si_name,
+        spoc: item.spoc_name
+      });
+
+    });
 
   });
 
+  const headers = Object.keys(rows[0]);
+
+  const csv = [
+    headers.join(","),
+    ...rows.map(r => headers.map(h => `"${r[h] || ""}"`).join(","))
+  ].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ATMS_Data.csv";
+  a.click();
+}
   // DOWNLOAD
   const blob = new Blob([csv.join("\n")], { type: "text/csv" });
   const url = window.URL.createObjectURL(blob);
