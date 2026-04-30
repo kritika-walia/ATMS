@@ -78,7 +78,9 @@ Download Excel
         <th>Ambulance Count</th>
 
         <th>Vendor</th>
+        <th>Contact Person</th>
         <th>Email</th>
+        <th>Address</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -154,7 +156,7 @@ async function loadData() {
 
       <td>${row.ofc?.status || ""}</td>
       <td>${row.ofc?.length || ""}</td>
-      <td>${row.ofc?.core || ""}</td>
+      <td>${row.ofc && row.ofc.core ? row.ofc.core : "-"}</td>
 
       <td>${equipmentText}</td>
 
@@ -168,7 +170,10 @@ async function loadData() {
       <td>${last.ambulance_count || ""}</td>
 
       <td>${row.si_name || ""}</td>
+      <td>${row.spoc_name || ""}</td>
       <td>${row.spoc_email || ""}</td>
+      <td>${row.si_address || ""}</td>
+      
     `;
 
     tbody.appendChild(tr);
@@ -231,10 +236,10 @@ if (!Array.isArray(monthly)) monthly = [];
         Ambulance_Year: m.ambulance_year,
         Ambulance_Count: m.ambulance_count,
 
-        Vendor: item.si_name,
-        Address: item.si_address,
-        SPOC: item.spoc_name,
-        Email: item.spoc_email
+        Vendor_Name: item.si_name,
+        Vendor_Address: item.si_address,
+        Contact_Person: item.spoc_name,
+        Contact_Email: item.spoc_email
       });
 
     });
