@@ -801,6 +801,7 @@ async function saveFormData() {
   const project = document.getElementById("projectTitle").value;
   const length = document.querySelector("[name='length']").value;
   const lanes = document.querySelector("[name='lanes']").value;
+    
 
   // ================= ATMS =================
   const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
@@ -855,6 +856,11 @@ document.querySelectorAll("#monthlyContainer .month-card").forEach(row => {
 
   // ================= VENDOR =================
   const vendor = document.querySelector("input[placeholder='ABC Tech Pvt Ltd']").value;
+    // ================= VENDOR =================
+const si_name = document.getElementById("siName").value;
+const si_address = document.getElementById("siAddress").value;
+const spoc_name = document.getElementById("spocName").value;
+const spoc_email = document.getElementById("spocEmail").value;
 
   // ================= INSERT =================
   const { error } = await supabaseClient
@@ -870,7 +876,7 @@ document.querySelectorAll("#monthlyContainer .month-card").forEach(row => {
       ofc,
       equipment,
       operational,
-      monthlyData,
+      month: monthlyData,
       vendor
     }]);
 
