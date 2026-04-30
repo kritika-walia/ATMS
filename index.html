@@ -618,14 +618,11 @@ function getRecentMonths() {
   ];
 }
 
-function setYears(select) {
-  const currentYear = 2026; // 👈 default
+    function setYears(select) {
+  const currentYear = new Date().getFullYear();
 
-  let years = [];
-
-  for (let i = currentYear - 2; i <= currentYear + 2; i++) {
-    years.push(i);
-  }
+  select.innerHTML = `<option selected>${currentYear}</option>`;
+}
 
   select.innerHTML = years
     .map(y => `<option ${y === currentYear ? "selected" : ""}>${y}</option>`)
