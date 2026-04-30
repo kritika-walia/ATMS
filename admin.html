@@ -193,17 +193,20 @@ async function getMissingProjects() {
   ];
 
   const { data: master } = await supabaseClient
-    .from("master_projects")
-    .select("upc, project_title, implementing_ro, piu")
-    .in("current_project_stage", allowedStatuses);
+  .from("master_projects")
+  .select("upc, project_title, implementing_ro, piu")
+  .in("current_project_stage", allowedStatuses)
+  .range(0, 2000);   // 🔥 FIX
 
   const { data: filled } = await supabaseClient
-    .from("atms_forms")
-    .select("upc");
+  .from("atms_forms")
+  .select("upc")
+  .range(0, 2000);
 
   const filledUPC = new Set(
     filled.map(f => f.upc).filter(Boolean)
   );
+
 
   const missing = master.filter(p => !filledUPC.has(p.upc));
 
