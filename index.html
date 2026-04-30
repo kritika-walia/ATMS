@@ -675,10 +675,20 @@ document.getElementById("piuDropdown").addEventListener("change", async function
 
   const selectedPIU = this.value;
 
+  const allowedStatuses = [
+    "CC issued",
+    "PCC Issued, CC Pending",
+    "Under O&M through OMT/TOT/O&M Agency at Site",
+    "CC Issued & O&M by Construction Agency",
+    "O&M on Project no more required",
+    "O&M Through MoRTH/State PWD"
+  ];
+
   const { data } = await supabaseClient
     .from("master_projects")
     .select("upc")
-    .eq("piu", selectedPIU);
+    .eq("piu", selectedPIU)
+    .in("current_project_stage", allowedStatuses);
 
   const upcDropdown = document.getElementById("upcDropdown");
   upcDropdown.innerHTML = '<option value="">Select UPC</option>';
@@ -704,11 +714,6 @@ document.getElementById("upcDropdown").addEventListener("change", async function
     .select("*")
     .eq("upc", selectedUPC)
     .single();
-
-
-const filteredData = data.filter(item =>
-  allowedStatuses.includes(item.current_project_stage)
-);
 
   if (data) {
     document.querySelector("[name='length']").value = data.length || "";
