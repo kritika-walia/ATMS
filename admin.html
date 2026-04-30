@@ -171,8 +171,8 @@ tr.innerHTML = `
   <td>${row.si_name || ""}</td>
   <td>${row.spoc_name || ""}</td>
   <td>${row.spoc_email || ""}</td>
-  <td>${row.spoc_phone || ""}</td>
   <td>${row.si_address || ""}</td>
+   <td>${row.spoc_phone || ""}</td>
 `;
 
 tbody.appendChild(tr);
@@ -238,7 +238,8 @@ if (!Array.isArray(monthly)) monthly = [];
         Vendor_Name: item.si_name,
         Vendor_Address: item.si_address,
         Contact_Person: item.spoc_name,
-        Contact_Email: item.spoc_email
+        Contact_Email: item.spoc_email,
+        Contact_Number: item.spoc_phone,
       });
 
     });
