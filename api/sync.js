@@ -1,37 +1,43 @@
 const { createClient } = require("@supabase/supabase-js");
 
+// ⚠️ SERVICE ROLE KEY use karo (anon nahi)
 const supabase = createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"   // ⚠️ anon key nahi, service role use karo
+  "PASTE_YOUR_SERVICE_ROLE_KEY"
 );
 
 module.exports = async function handler(req, res) {
   try {
 
-    // 🔥 STEP 1: API call (yahan apni real API daalna)
+    // 🔥 STEP 1: API call
     const apiResponse = await fetch("YOUR_API_URL");
     const apiDataList = await apiResponse.json();
 
-    // Example expected:
-    // [{ upc: "123", current_project_stage: "Operational" }]
+    let updatedCount = 0;
 
-    // 🔥 STEP 2: Loop through API data
+    // 🔥 STEP 2: Loop & UPDATE only
     for (let item of apiDataList) {
 
-      if (!item.upc) continue; // safety check
+      if (!item.upc) continue;
 
-     await supabase
-  .from("master_projects")
-  .upsert({
-    upc: item.upc,
-    current_project_stage: item.current_project_stage
-  }, { onConflict: "upc" });
+      const { error } = await supabase
+        .from("master_projects")
+        .update({
+          current_project_stage: item.current_project_stage || null
+        })
+        .eq("upc", item.upc);
 
+      if (error) {
+        console.log("Update error:", error);
+      } else {
+        updatedCount++;
+      }
     }
 
     return res.status(200).json({
       message: "Sync completed successfully ✅",
-      records: apiDataList.length
+      total_records: apiDataList.length,
+      updated_records: updatedCount
     });
 
   } catch (error) {
