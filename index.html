@@ -695,10 +695,21 @@ document.addEventListener("DOMContentLoaded", addMonthlyRow);
         const newRow = template.cloneNode(true);
 
 // 🔥 REMOVE BUTTON LOGIC
-const removeBtn = newRow.querySelector(".remove-btn");
-removeBtn.addEventListener("click", function () {
-  newRow.remove();
-});
+function updateRemoveButtons() {
+  const rows = document.querySelectorAll("#monthlyContainer .month-card");
+
+  rows.forEach((row, index) => {
+    const btn = row.querySelector(".remove-btn");
+
+    if (!btn) return;
+
+    if (index === 0) {
+      btn.style.display = "none"; // ❌ first row → hide
+    } else {
+      btn.style.display = "block"; // ✅ others → show
+    }
+  });
+}
         if (document.querySelectorAll("#monthlyContainer .month-card").length === 1) {
   removeBtn.style.display = "none";
 }
