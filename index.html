@@ -708,6 +708,33 @@ function updateRemoveButtons() {
 document.addEventListener("DOMContentLoaded", () => {
   addMonthlyRow(); // first row create
 });
+async function loadAllData() {
+
+  const allowedStatuses = [
+    "CC Issued",
+    "PCC Issued, CC Pending",
+    "Under O&M through OMT/TOT/O&M Agency at Site",
+    "CC Issued & O&M by Construction Agency",
+    "O&M on Project no more required",
+    "O&M Through MoRTH/State PWD"
+  ];
+
+  const { data, error } = await supabaseClient
+    .from("master_projects")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  masterData = data.filter(d =>
+    allowedStatuses.includes(d.current_project_stage)
+  );
+
+  loadRODropdown();
+}
+   
     // ================= LOAD RO =================
     function loadRODropdown() {
 
