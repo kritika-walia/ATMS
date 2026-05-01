@@ -694,24 +694,18 @@ function updateRemoveButtons() {
     if (!btn) return;
 
     if (index === 0) {
-      btn.style.display = "none";   // ❌ first row hide
+      btn.style.display = "none";
     } else {
-      btn.style.display = "block";  // ✅ others show
+      btn.style.display = "block";
     }
   });
 }
 
 
-// page load pe ek row
-document.addEventListener("DOMContentLoaded", addMonthlyRow);
-
-  // 🔥 Filter once here
-  masterData = data.filter(d =>
-    allowedStatuses.includes(d.current_project_stage)
-  );
-
-  loadRODropdown();
-}
+// ✅ page load pe ek row
+document.addEventListener("DOMContentLoaded", () => {
+  addMonthlyRow();
+});
 
     // ================= LOAD RO =================
     function loadRODropdown() {
