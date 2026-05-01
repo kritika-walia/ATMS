@@ -679,16 +679,17 @@ function addMonthlyRow() {
   // 🔥 REMOVE BUTTON LOGIC
  document.getElementById("removeLastRowBtn").addEventListener("click", function () {
 
-  const rows = document.querySelectorAll("#monthlyContainer .month-card");
+const container = document.getElementById("monthlyContainer");
 
-  if (rows.length > 1) {
-    rows[rows.length - 1].remove(); // last row delete
-  } else {
-    alert("At least one row is required");
-  }
+// sirf visible rows lo (template ignore)
+const rows = Array.from(container.children);
 
-});
-
+if (rows.length > 1) {
+  container.removeChild(rows[rows.length - 1]); // safe delete
+} else {
+  alert("At least one row is required");
+}
+    
   // append row
   document.getElementById("monthlyContainer").appendChild(newRow);
 
