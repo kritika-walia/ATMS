@@ -700,6 +700,24 @@ function updateRemoveButtons() {
     }
   });
 }
+    const removeBtn = newRow.querySelector(".remove-btn");
+
+const existingRows = document.querySelectorAll("#monthlyContainer .month-card");
+
+if (removeBtn) {
+
+  // ❌ First row → no remove button
+  if (existingRows.length === 0) {
+    removeBtn.style.display = "none";
+  } else {
+    removeBtn.style.display = "block";
+
+    removeBtn.addEventListener("click", function () {
+      newRow.remove();
+      updateRemoveButtons();
+    });
+  }
+}
 
 
 // ✅ page load pe ek row
