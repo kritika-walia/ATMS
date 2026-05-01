@@ -655,34 +655,34 @@ function addMonthlyRow() {
   // reset inputs
   newRow.querySelectorAll("input").forEach(i => i.value = "");
 
-  // months set karo
+  // months set
   const months = getRecentMonths();
 
   newRow.querySelectorAll(".challan-month, .ambulance-month").forEach(select => {
     select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
   });
 
-  // years set karo
+  // years set
   newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
     setYears(select);
   });
 
-  // 🔥 REMOVE BUTTON LOGIC
+  // 🔥 REMOVE BUTTON
   const removeBtn = newRow.querySelector(".remove-btn");
 
   if (removeBtn) {
     removeBtn.addEventListener("click", function () {
       newRow.remove();
-      updateRemoveButtons(); // update after delete
+      updateRemoveButtons();
     });
   }
 
+  // add row
   document.getElementById("monthlyContainer").appendChild(newRow);
 
-  // 🔥 update buttons after adding
+  // update buttons
   updateRemoveButtons();
 }
-
 
 // 🔥 CONTROL REMOVE BUTTON VISIBILITY
 function updateRemoveButtons() {
@@ -706,18 +706,6 @@ const existingRows = document.querySelectorAll("#monthlyContainer .month-card");
 
 if (removeBtn) {
 
-  // ❌ First row → no remove button
-  if (existingRows.length === 0) {
-    removeBtn.style.display = "none";
-  } else {
-    removeBtn.style.display = "block";
-
-    removeBtn.addEventListener("click", function () {
-      newRow.remove();
-      updateRemoveButtons();
-    });
-  }
-}
 
 
 // ✅ page load pe ek row
