@@ -677,18 +677,21 @@ function addMonthlyRow() {
   });
 
   // 🔥 REMOVE BUTTON LOGIC
- document.getElementById("removeLastRowBtn").addEventListener("click", function () {
+document.getElementById("removeLastRowBtn").addEventListener("click", function () {
 
-const container = document.getElementById("monthlyContainer");
+  const container = document.getElementById("monthlyContainer");
+  const rows = container.querySelectorAll(".month-card");
 
-// sirf visible rows lo (template ignore)
-const rows = Array.from(container.children);
+  // ❌ agar sirf 1 row hai → block
+  if (rows.length === 1) {
+    alert("At least one row is required");
+    return;
+  }
 
-if (rows.length > 1) {
-  container.removeChild(rows[rows.length - 1]); // safe delete
-} else {
-  alert("At least one row is required");
-}
+  // ✅ warna last row delete karo
+  container.removeChild(rows[rows.length - 1]);
+
+});
     
   // append row
   document.getElementById("monthlyContainer").appendChild(newRow);
