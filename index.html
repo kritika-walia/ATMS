@@ -667,34 +667,24 @@ function addMonthlyRow() {
     setYears(select);
   });
 
+  // 🔥 REMOVE BUTTON LOGIC
+  const removeBtn = newRow.querySelector(".remove-btn");
+
+  if (removeBtn) {
+    removeBtn.addEventListener("click", function () {
+      newRow.remove();
+      updateRemoveButtons(); // update after delete
+    });
+  }
+
   document.getElementById("monthlyContainer").appendChild(newRow);
+
+  // 🔥 update buttons after adding
+  updateRemoveButtons();
 }
 
-// page load pe ek row
-document.addEventListener("DOMContentLoaded", addMonthlyRow);
 
-    async function loadAllData() {
-
-  const allowedStatuses = [
-    "CC Issued",
-    "PCC Issued, CC Pending",
-    "Under O&M through OMT/TOT/O&M Agency at Site",
-    "CC Issued & O&M by Construction Agency",
-    "O&M on Project no more required",
-    "O&M Through MoRTH/State PWD"
-  ];
-
-  const { data, error } = await supabaseClient
-    .from("master_projects")
-    .select("*");
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-        const newRow = template.cloneNode(true);
-
-// 🔥 REMOVE BUTTON LOGIC
+// 🔥 CONTROL REMOVE BUTTON VISIBILITY
 function updateRemoveButtons() {
   const rows = document.querySelectorAll("#monthlyContainer .month-card");
 
@@ -704,15 +694,16 @@ function updateRemoveButtons() {
     if (!btn) return;
 
     if (index === 0) {
-      btn.style.display = "none"; // ❌ first row → hide
+      btn.style.display = "none";   // ❌ first row hide
     } else {
-      btn.style.display = "block"; // ✅ others → show
+      btn.style.display = "block";  // ✅ others show
     }
   });
 }
-        if (document.querySelectorAll("#monthlyContainer .month-card").length === 1) {
-  removeBtn.style.display = "none";
-}
+
+
+// page load pe ek row
+document.addEventListener("DOMContentLoaded", addMonthlyRow);
 
   // 🔥 Filter once here
   masterData = data.filter(d =>
