@@ -641,6 +641,7 @@ function getRecentMonths() {
   select.innerHTML = `<option selected>${currentYear}</option>`;
 }
 
+// ================= MONTHLY ROW ADD =================
 function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
@@ -667,7 +668,7 @@ function addMonthlyRow() {
     setYears(select);
   });
 
-  // 🔥 REMOVE BUTTON
+  // 🔥 REMOVE BUTTON LOGIC
   const removeBtn = newRow.querySelector(".remove-btn");
 
   if (removeBtn) {
@@ -677,14 +678,15 @@ function addMonthlyRow() {
     });
   }
 
-  // add row
+  // append row
   document.getElementById("monthlyContainer").appendChild(newRow);
 
-  // update buttons
+  // update remove visibility
   updateRemoveButtons();
 }
 
-// 🔥 CONTROL REMOVE BUTTON VISIBILITY
+
+// ================= REMOVE BUTTON CONTROL =================
 function updateRemoveButtons() {
   const rows = document.querySelectorAll("#monthlyContainer .month-card");
 
@@ -694,25 +696,18 @@ function updateRemoveButtons() {
     if (!btn) return;
 
     if (index === 0) {
-      btn.style.display = "none";
+      btn.style.display = "none";   // first hidden
     } else {
-      btn.style.display = "block";
+      btn.style.display = "block";  // others visible
     }
   });
 }
-    const removeBtn = newRow.querySelector(".remove-btn");
-
-const existingRows = document.querySelectorAll("#monthlyContainer .month-card");
-
-if (removeBtn) {
 
 
-
-// ✅ page load pe ek row
+// ================= PAGE LOAD =================
 document.addEventListener("DOMContentLoaded", () => {
-  addMonthlyRow();
+  addMonthlyRow(); // first row create
 });
-
     // ================= LOAD RO =================
     function loadRODropdown() {
 
