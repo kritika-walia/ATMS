@@ -496,6 +496,12 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
   <!-- 👇 HIDDEN TEMPLATE -->
   <div id="monthlyTemplate" style="display:none;">
   <div class="month-card">
+ <button type="button" class="btn btn-danger btn-sm remove-btn"
+      style="position:absolute; top:10px; right:10px;">
+      Remove
+    </button>
+
+      
   <div class="row g-4">
 
     <!-- 🔹 ROW 1 (TOP 3) -->
@@ -686,6 +692,16 @@ document.addEventListener("DOMContentLoaded", addMonthlyRow);
     console.log(error);
     return;
   }
+        const newRow = template.cloneNode(true);
+
+// 🔥 REMOVE BUTTON LOGIC
+const removeBtn = newRow.querySelector(".remove-btn");
+removeBtn.addEventListener("click", function () {
+  newRow.remove();
+});
+        if (document.querySelectorAll("#monthlyContainer .month-card").length === 1) {
+  removeBtn.style.display = "none";
+}
 
   // 🔥 Filter once here
   masterData = data.filter(d =>
@@ -844,6 +860,12 @@ async function saveFormData() {
     status: document.querySelectorAll(".form-select")[1].value,
     challan: document.querySelectorAll(".form-select")[2].value
   };
+
+    const removeBtn = newRow.querySelector(".remove-btn");
+
+removeBtn.addEventListener("click", function () {
+  newRow.remove();
+});
 
   // ================= MONTHLY =================
 
