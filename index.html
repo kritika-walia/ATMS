@@ -533,15 +533,17 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
 
   </div>
 </div>
-      </div>
+     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
 
   <button type="button" class="btn btn-danger" id="removeLastRowBtn">
     Remove
   </button>
 
-  <button type="button" class="btn btn-primary" onclick="addMonthlyRow()" justify-content: center;>
+  <button type="button" class="btn btn-primary" onclick="addMonthlyRow()">
     + Add More
   </button>
+
+</div>
 
     
 </div>
@@ -674,14 +676,17 @@ function addMonthlyRow() {
   });
 
   // 🔥 REMOVE BUTTON LOGIC
-  const removeBtn = newRow.querySelector(".remove-btn");
+ document.getElementById("removeLastRowBtn").addEventListener("click", function () {
 
-  if (removeBtn) {
-    removeBtn.addEventListener("click", function () {
-      newRow.remove();
-      updateRemoveButtons();
-    });
+  const rows = document.querySelectorAll("#monthlyContainer .month-card");
+
+  if (rows.length > 1) {
+    rows[rows.length - 1].remove(); // last row delete
+  } else {
+    alert("At least one row is required");
   }
+
+});
 
   // append row
   document.getElementById("monthlyContainer").appendChild(newRow);
