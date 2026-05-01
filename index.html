@@ -654,52 +654,24 @@ function addMonthlyRow() {
 
   const template = document.querySelector("#monthlyTemplate .month-card");
 
-  if (!template) {
-    console.error("Template not found ❌");
-    return;
-  }
-
   const newRow = template.cloneNode(true);
 
-  // reset inputs
   newRow.querySelectorAll("input").forEach(i => i.value = "");
 
-  // months set
   const months = getRecentMonths();
 
   newRow.querySelectorAll(".challan-month, .ambulance-month").forEach(select => {
     select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
   });
 
-  // years set
   newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
     setYears(select);
   });
 
-  // 🔥 REMOVE BUTTON LOGIC
-document.getElementById("removeLastRowBtn").addEventListener("click", function () {
-
-  const container = document.getElementById("monthlyContainer");
-  const rows = container.querySelectorAll(".month-card");
-
-  // ❌ agar sirf 1 row hai → block
-  if (rows.length === 1) {
-    alert("At least one row is required");
-    return;
-  }
-
-  // ✅ warna last row delete karo
-  container.removeChild(rows[rows.length - 1]);
-
-});
-    
-  // append row
   document.getElementById("monthlyContainer").appendChild(newRow);
 
-  // update remove visibility
   updateRemoveButtons();
 }
-
 
 // ================= REMOVE BUTTON CONTROL =================
 function updateRemoveButtons() {
