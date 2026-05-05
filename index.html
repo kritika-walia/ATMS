@@ -653,28 +653,19 @@ async function loadAllData() {
     "O&M Through MoRTH/State PWD"
   ];
 
-  const { data, error } = await supabaseClient
-    .from("master_projects")
-    .select("*", { count: "exact" })
-    .range(0, 2000); // 🔥 IMPORTANT
+  const data = await fetchAllProjects();
 
-  if (error) {
-    console.error("Error fetching data:", error);
-    return;
-  }
-
-  console.log("Total rows from API:", data.length);
+  console.log("Total fetched:", data.length); // ✅ should be ~4172
 
   // 🔥 FILTER
   masterData = data.filter(d =>
     allowedStatuses.includes((d.current_project_stage || "").trim())
   );
 
-  console.log("After Filter:", masterData.length);
+  console.log("After filter:", masterData.length); // ✅ should be ~1335
 
   loadRODropdown();
 }
-
 // ================= LOAD RO =================
 function loadRODropdown() {
 
