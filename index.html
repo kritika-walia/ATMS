@@ -779,7 +779,120 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+// ================= SAVE DATA =================
+async function saveFormData() {
 
+  // BASIC
+  const ro = document.getElementById("roDropdown").value;
+  const piu = document.getElementById("piuDropdown").value;
+  const upc = document.getElementById("upcDropdown").value;
+  const project = document.getElementById("projectTitle").value;
+  const length = document.querySelector("[name='length']").value;
+  const lanes = document.querySelector("[name='lanes']").value;
+
+  // ATMS
+  const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
+
+  // OFC
+  const ofc = {
+    status: document.getElementById("ofcSelect").value,
+    length: document.getElementById("ofcLength").value,
+    core: document.getElementById("ofcCore").value
+  };
+
+  // EQUIPMENT
+  let equipment = [];
+
+  document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+    const name = row.cells[0].innerText.trim();
+    const installed = row.querySelector(".installed-count")?.value || "";
+    const working = row.querySelector(".working-count")?.value || "";
+
+    equipment.push({
+      component: name,
+      installed,
+      working
+    });
+  });
+
+
+
+  // 🔥 FUNCTIONING (NEW)
+  const functioning = {
+    year: document.getElementById("yearSelect").value,
+    quarter: document.getElementById("quarterSelect").value,
+    violations: document.getElementById("violationsCount").value,
+    dispatch: document.getElementById("dispatchCount").value
+  };
+
+  // VENDOR
+  const si_name = document.getElementById("siName").value;
+  const si_address = document.getElementById("siAddress").value;
+  const spoc_name = document.getElementById("spocName").value;
+  const spoc_email = document.getElementById("spocEmail").value;
+  const spoc_phone = document.getElementById("spocPhone").value;
+
+  // INSERT
+  const { error } = await supabaseClient
+    .from("atms_forms")
+    .insert([{
+      ro,
+      piu,
+      upc,
+      project_title: project,
+      length,
+      lanes,
+      atms_status: atms,
+      ofc,
+      equipment,
+      operational,
+      functioning,
+      si_name,
+      si_address,
+      spoc_name,
+      spoc_email,
+      spoc_phone
+    }]);
+
+  if (error) {
+    console.error(error);
+    alert("Error saving data ❌");
+  } else {
+    alert("✅ Data Saved Successfully!");
+    location.reload();
+  }
+}
+
+
+// ================= INIT =================
+loadAllData();
+
+</script>
+
+    <script>
+
+document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+
+  const installed = row.querySelector(".installed-count");
+  const active = row.querySelector(".working-count");
+  const warning = row.querySelector(".warn-text");
+
+  function validate() {
+    const instVal = parseInt(installed.value) || 0;
+    const actVal = parseInt(active.value) || 0;
+
+    if (actVal > instVal) {
+      warning.style.display = "block";
+      active.value = instVal; // auto-correct
+    } else {
+      warning.style.display = "none";
+    }
+  }
+ 
+
+});
+</script>
+    
 <script>
 async function saveFormData() {
 
