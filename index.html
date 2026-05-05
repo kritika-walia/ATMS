@@ -818,10 +818,10 @@ async function saveFormData() {
   });
 
   // OPERATIONAL (FIXED)
-  const operational = {
-    since: document.querySelector("input[type='date']").value,
-    status: document.getElementById("operationalStatus")?.value || ""
-  };
+ const operational = {
+  since: document.getElementById("operationalSince")?.value || "",
+  status: document.getElementById("operationalStatus")?.value || ""
+};
 
   // 🔥 FUNCTIONING (NEW)
   const functioning = {
