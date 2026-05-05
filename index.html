@@ -767,6 +767,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ================= SAVE DATA =================
 async function saveFormData() {
+    console.log("CLICK WORKING ✅");
 
   const ro = document.getElementById("roDropdown").value;
   const piu = document.getElementById("piuDropdown").value;
@@ -876,6 +877,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
+});
+    document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("submitBtn").addEventListener("click", saveFormData);
 });
 </script>
     
