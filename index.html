@@ -679,42 +679,6 @@ function addMonthlyRow() {
   updateRemoveButtons();
 }
 
-    // 🔥 REMOVE BUTTON LOGIC (ONLY ONCE)
-document.getElementById("removeLastRowBtn").addEventListener("click", function () {
-
-  const container = document.getElementById("monthlyContainer");
-  const rows = container.children; // better than querySelector
-
-  if (rows.length === 1) {
-    alert("At least one row is required");
-    return;
-  }
-
-  container.removeChild(rows[rows.length - 1]);
-    updateRemoveButtons(); // 🔥 ADD THIS
-
-});
-// ================= REMOVE BUTTON CONTROL =================
-function updateRemoveButtons() {
-  const rows = document.querySelectorAll("#monthlyContainer .month-card");
-
-  rows.forEach((row, index) => {
-    const btn = row.querySelector(".remove-btn");
-
-    if (!btn) return;
-
-    if (index === 0) {
-      btn.style.display = "none";   // first hidden
-    } else {
-      btn.style.display = "block";  // others visible
-    }
-  });
-}
-
-    // ✅ INIT (YEH LAST ME AAYEGA)
-document.addEventListener("DOMContentLoaded", () => {
-  updateRemoveButtons();
-});
 
 // ================= PAGE LOAD =================
 document.addEventListener("DOMContentLoaded", () => {
