@@ -833,13 +833,11 @@ async function saveFormData() {
       spoc_phone
     }]);
 
-  if (error) {
-    console.error(error);
-    alert("Error saving data ❌");
-  } else {
-    alert("✅ Data Saved Successfully!");
-    location.reload();
-  }
+    if (error) {
+  console.error("FULL ERROR:", error);
+  alert(error.message);
+}
+
 }
 
 
