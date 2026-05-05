@@ -652,7 +652,13 @@ async function loadAllData() {
     "O&M on Project no more required",
     "O&M Through MoRTH/State PWD"
   ];
+const { data, error } = await supabaseClient
+  .from("master_projects")
+  .select("*", { count: "exact" })
+  .range(0, 2000);
 
+console.log("Total rows from API:", data.length);
+    
   const { data, error } = await supabaseClient
     .from("master_projects")
     .select("*");
