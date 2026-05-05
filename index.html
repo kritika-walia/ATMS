@@ -624,32 +624,25 @@ function showThankYou(){
     location.reload();
 }
 </script>
-
-    
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
-// ================= INIT SUPABASE =================
+// ================= INIT =================
 const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
+  "YOUR_ANON_KEY"
 );
 
 let masterData = [];
 
 
-// ================= LOAD ALL DATA =================
+// ================= FETCH ALL DATA =================
 async function fetchAllProjects() {
-
   let allData = [];
   let from = 0;
   const batchSize = 1000;
 
   while (true) {
-
     const { data, error } = await supabaseClient
       .from("master_projects")
       .select("*")
@@ -670,7 +663,9 @@ async function fetchAllProjects() {
   return allData;
 }
 
-    async function loadAllData() {
+
+// ================= LOAD DATA =================
+async function loadAllData() {
 
   const allowedStatuses = [
     "CC Issued",
@@ -694,10 +689,9 @@ async function fetchAllProjects() {
   loadRODropdown();
 }
 
-    loadAllData();
+
 // ================= LOAD RO =================
 function loadRODropdown() {
-
   const roDropdown = document.getElementById("roDropdown");
 
   const uniqueRO = [...new Set(masterData.map(d => d.implementing_ro))];
@@ -715,12 +709,10 @@ function loadRODropdown() {
 }
 
 
-// ================= EVENT LISTENERS =================
+// ================= EVENTS =================
 document.addEventListener("DOMContentLoaded", () => {
 
-  // 🔥 RO → PIU
   document.getElementById("roDropdown").addEventListener("change", function () {
-
     const selectedRO = this.value;
 
     const filtered = masterData.filter(d => d.implementing_ro === selectedRO);
@@ -742,10 +734,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
   });
 
-
-  // 🔥 PIU → UPC
   document.getElementById("piuDropdown").addEventListener("change", function () {
-
     const selectedPIU = this.value;
 
     const filtered = masterData.filter(d => d.piu === selectedPIU);
@@ -763,10 +752,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
-  // 🔥 UPC → AUTO FILL
   document.getElementById("upcDropdown").addEventListener("change", function () {
-
     const selectedUPC = this.value;
 
     const project = masterData.find(d => d.upc === selectedUPC);
@@ -779,10 +765,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+
 // ================= SAVE DATA =================
 async function saveFormData() {
 
-  // BASIC
   const ro = document.getElementById("roDropdown").value;
   const piu = document.getElementById("piuDropdown").value;
   const upc = document.getElementById("upcDropdown").value;
@@ -790,49 +777,41 @@ async function saveFormData() {
   const length = document.querySelector("[name='length']").value;
   const lanes = document.querySelector("[name='lanes']").value;
 
-  // ATMS
   const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
 
-  // OFC
   const ofc = {
     status: document.getElementById("ofcSelect").value,
     length: document.getElementById("ofcLength").value,
     core: document.getElementById("ofcCore").value
   };
 
-  // EQUIPMENT
   let equipment = [];
-
   document.querySelectorAll(".eq-table tbody tr").forEach(row => {
-    const name = row.cells[0].innerText.trim();
-    const installed = row.querySelector(".installed-count")?.value || "";
-    const working = row.querySelector(".working-count")?.value || "";
-
     equipment.push({
-      component: name,
-      installed,
-      working
+      component: row.cells[0].innerText.trim(),
+      installed: row.querySelector(".installed-count")?.value || "",
+      working: row.querySelector(".working-count")?.value || ""
     });
   });
 
-
-
-  // 🔥 FUNCTIONING (NEW)
-  const functioning = {
-    year: document.getElementById("yearSelect").value,
-    quarter: document.getElementById("quarterSelect").value,
-    violations: document.getElementById("violationsCount").value,
-    dispatch: document.getElementById("dispatchCount").value
+  const operational = {
+    since: document.getElementById("operationalSince")?.value || "",
+    status: document.getElementById("operationalStatus")?.value || ""
   };
 
-  // VENDOR
+  const functioning = {
+    year: document.getElementById("yearSelect")?.value || "",
+    quarter: document.getElementById("quarterSelect")?.value || "",
+    violations: document.getElementById("violationsCount")?.value || "",
+    dispatch: document.getElementById("dispatchCount")?.value || ""
+  };
+
   const si_name = document.getElementById("siName").value;
   const si_address = document.getElementById("siAddress").value;
   const spoc_name = document.getElementById("spocName").value;
   const spoc_email = document.getElementById("spocEmail").value;
   const spoc_phone = document.getElementById("spocPhone").value;
 
-  // INSERT
   const { error } = await supabaseClient
     .from("atms_forms")
     .insert([{
@@ -864,129 +843,13 @@ async function saveFormData() {
 }
 
 
-// ================= INIT =================
+// ================= INIT CALL =================
 loadAllData();
 
 </script>
-
-    <script>
-
-document.querySelectorAll(".eq-table tbody tr").forEach(row => {
-
-  const installed = row.querySelector(".installed-count");
-  const active = row.querySelector(".working-count");
-  const warning = row.querySelector(".warn-text");
-
-  function validate() {
-    const instVal = parseInt(installed.value) || 0;
-    const actVal = parseInt(active.value) || 0;
-
-    if (actVal > instVal) {
-      warning.style.display = "block";
-      active.value = instVal; // auto-correct
-    } else {
-      warning.style.display = "none";
-    }
-  }
- 
-
-});
-</script>
-    
-<script>
-async function saveFormData() {
-
-  // ================= BASIC =================
-  const ro = document.getElementById("roDropdown").value;
-  const piu = document.getElementById("piuDropdown").value;
-  const upc = document.getElementById("upcDropdown").value;
-  const project = document.getElementById("projectTitle").value;
-  const length = document.querySelector("[name='length']").value;
-  const lanes = document.querySelector("[name='lanes']").value;
     
 
-  // ================= ATMS =================
-  const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
 
-  // ================= OFC =================
-  const ofc = {
-    status: document.getElementById("ofcSelect").value,
-    length: document.getElementById("ofcLength").value,
-    core: document.getElementById("ofcCore").value
-  };
-
-  // ================= EQUIPMENT =================
-  let equipment = [];
-
-  document.querySelectorAll(".eq-table tbody tr").forEach(row => {
-    const name = row.cells[0].innerText.trim();
-    const installed = row.querySelector(".installed-count")?.value || "";
-    const working = row.querySelector(".working-count")?.value || "";
-
-    equipment.push({
-      component: name,
-      installed,
-      working
-    });
-  });
-
-    
-  // ================= OPERATION =================
-  // OPERATIONAL (FIXED)
- const operational = {
-  since: document.getElementById("operationalSince")?.value || "",
-  status: document.getElementById("operationalStatus")?.value || ""
-};
-
-   //------------funtioning-----
-
-  const functioning = {
-  year: document.getElementById("yearSelect").value,
-  quarter: document.getElementById("quarterSelect").value,
-  violations: document.getElementById("violationsCount").value,
-  dispatch: document.getElementById("dispatchCount").value
-};
-
-
-    // ================= VENDOR =================
-const si_name = document.getElementById("siName").value;
-const si_address = document.getElementById("siAddress").value;
-const spoc_name = document.getElementById("spocName").value;
-const spoc_email = document.getElementById("spocEmail").value;
-const spoc_phone = document.getElementById("spocPhone").value;
-
-    console.log("PHONE:", spoc_phone);
-  // ================= INSERT =================
- const { error } = await supabaseClient
-  .from("atms_forms")
-  .insert([{
-    ro,
-    piu,
-    upc,
-    project_title: project,
-    length,
-    lanes,
-    atms_status: atms,
-    ofc,
-    equipment,
-    operational,
-    si_name,
-    si_address,
-    spoc_name,
-    spoc_email,
-    spoc_phone,
-    functioning
-  }]);
-
-  if (error) {
-    console.log(error);
-    alert("Error saving data");
-  } else {
-    alert("✅ Data Saved Successfully!");
-    location.reload();
-  }
-}
-</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
