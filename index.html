@@ -629,14 +629,19 @@ function showThankYou(){
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
+// ================= INIT SUPABASE =================
 const supabaseClient = window.supabase.createClient(
   "https://evhencgqdjwzqghaimut.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
+
 let masterData = [];
 
-// ================= PAGE LOAD =================
+
+// ================= LOAD ALL DATA =================
 async function loadAllData() {
 
   const allowedStatuses = [
@@ -648,11 +653,28 @@ async function loadAllData() {
     "O&M Through MoRTH/State PWD"
   ];
 
+  const { data, error } = await supabaseClient
+    .from("master_projects")
+    .select("*");
+
+  if (error) {
+    console.error("Error fetching data:", error);
+    return;
+  }
+
+  // 🔥 FILTER DATA
+  masterData = data.filter(d =>
+    allowedStatuses.includes(d.current_project_stage)
+  );
+
+  console.log("Loaded records:", masterData.length);
+
   loadRODropdown();
 }
-   
-    // ================= LOAD RO =================
-    function loadRODropdown() {
+
+
+// ================= LOAD RO =================
+function loadRODropdown() {
 
   const roDropdown = document.getElementById("roDropdown");
 
@@ -669,69 +691,166 @@ async function loadAllData() {
     }
   });
 }
-    
 
 
-// ================= RO → PIU =================
-document.getElementById("roDropdown").addEventListener("change", function () {
+// ================= EVENT LISTENERS =================
+document.addEventListener("DOMContentLoaded", () => {
 
-  const selectedRO = this.value;
+  // 🔥 RO → PIU
+  document.getElementById("roDropdown").addEventListener("change", function () {
 
-  const filtered = masterData.filter(d => d.implementing_ro === selectedRO);
+    const selectedRO = this.value;
 
-  const uniquePIU = [...new Set(filtered.map(d => d.piu))];
+    const filtered = masterData.filter(d => d.implementing_ro === selectedRO);
 
-  const piuDropdown = document.getElementById("piuDropdown");
-  piuDropdown.innerHTML = '<option value="">Select PIU</option>';
+    const uniquePIU = [...new Set(filtered.map(d => d.piu))];
 
-  uniquePIU.forEach(piu => {
-    if (piu) {
-      let option = document.createElement("option");
-      option.value = piu;
-      option.textContent = piu;
-      piuDropdown.appendChild(option);
+    const piuDropdown = document.getElementById("piuDropdown");
+    piuDropdown.innerHTML = '<option value="">Select PIU</option>';
+
+    uniquePIU.forEach(piu => {
+      if (piu) {
+        let option = document.createElement("option");
+        option.value = piu;
+        option.textContent = piu;
+        piuDropdown.appendChild(option);
+      }
+    });
+
+    document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
+  });
+
+
+  // 🔥 PIU → UPC
+  document.getElementById("piuDropdown").addEventListener("change", function () {
+
+    const selectedPIU = this.value;
+
+    const filtered = masterData.filter(d => d.piu === selectedPIU);
+
+    const upcDropdown = document.getElementById("upcDropdown");
+    upcDropdown.innerHTML = '<option value="">Select UPC</option>';
+
+    filtered.forEach(item => {
+      if (item.upc) {
+        let option = document.createElement("option");
+        option.value = item.upc;
+        option.textContent = item.upc;
+        upcDropdown.appendChild(option);
+      }
+    });
+  });
+
+
+  // 🔥 UPC → AUTO FILL
+  document.getElementById("upcDropdown").addEventListener("change", function () {
+
+    const selectedUPC = this.value;
+
+    const project = masterData.find(d => d.upc === selectedUPC);
+
+    if (project) {
+      document.querySelector("[name='length']").value = project.length || "";
+      document.getElementById("projectTitle").value = project.project_title || "";
+      document.querySelector("[name='lanes']").value = project.lanes || "";
     }
   });
 
-  document.getElementById("upcDropdown").innerHTML = '<option value="">Select UPC</option>';
 });
-// ================= PIU → UPC =================
-document.getElementById("piuDropdown").addEventListener("change", function () {
 
-  const selectedPIU = this.value;
 
-  const filtered = masterData.filter(d => d.piu === selectedPIU);
+// ================= SAVE DATA =================
+async function saveFormData() {
 
-  const upcDropdown = document.getElementById("upcDropdown");
-  upcDropdown.innerHTML = '<option value="">Select UPC</option>';
+  // BASIC
+  const ro = document.getElementById("roDropdown").value;
+  const piu = document.getElementById("piuDropdown").value;
+  const upc = document.getElementById("upcDropdown").value;
+  const project = document.getElementById("projectTitle").value;
+  const length = document.querySelector("[name='length']").value;
+  const lanes = document.querySelector("[name='lanes']").value;
 
-  filtered.forEach(item => {
-    if (item.upc) {
-      let option = document.createElement("option");
-      option.value = item.upc;
-      option.textContent = item.upc;
-      upcDropdown.appendChild(option);
-    }
+  // ATMS
+  const atms = document.querySelector("input[name='atms']:checked")?.nextElementSibling.innerText || "";
+
+  // OFC
+  const ofc = {
+    status: document.getElementById("ofcSelect").value,
+    length: document.getElementById("ofcLength").value,
+    core: document.getElementById("ofcCore").value
+  };
+
+  // EQUIPMENT
+  let equipment = [];
+
+  document.querySelectorAll(".eq-table tbody tr").forEach(row => {
+    const name = row.cells[0].innerText.trim();
+    const installed = row.querySelector(".installed-count")?.value || "";
+    const working = row.querySelector(".working-count")?.value || "";
+
+    equipment.push({
+      component: name,
+      installed,
+      working
+    });
   });
-});
-    
-// ================= UPC → AUTO FILL =================
-document.getElementById("upcDropdown").addEventListener("change", function () {
 
-  const selectedUPC = this.value;
+  // OPERATIONAL (FIXED)
+  const operational = {
+    since: document.querySelector("input[type='date']").value,
+    status: document.getElementById("operationalStatus")?.value || ""
+  };
 
-  const project = masterData.find(d => d.upc === selectedUPC);
+  // 🔥 FUNCTIONING (NEW)
+  const functioning = {
+    year: document.getElementById("yearSelect").value,
+    quarter: document.getElementById("quarterSelect").value,
+    violations: document.getElementById("violationsCount").value,
+    dispatch: document.getElementById("dispatchCount").value
+  };
 
-  if (project) {
-    document.querySelector("[name='length']").value = project.length || "";
-    document.getElementById("projectTitle").value = project.project_title || "";
-    document.querySelector("[name='lanes']").value = project.lanes || "";
+  // VENDOR
+  const si_name = document.getElementById("siName").value;
+  const si_address = document.getElementById("siAddress").value;
+  const spoc_name = document.getElementById("spocName").value;
+  const spoc_email = document.getElementById("spocEmail").value;
+  const spoc_phone = document.getElementById("spocPhone").value;
+
+  // INSERT
+  const { error } = await supabaseClient
+    .from("atms_forms")
+    .insert([{
+      ro,
+      piu,
+      upc,
+      project_title: project,
+      length,
+      lanes,
+      atms_status: atms,
+      ofc,
+      equipment,
+      operational,
+      functioning,
+      si_name,
+      si_address,
+      spoc_name,
+      spoc_email,
+      spoc_phone
+    }]);
+
+  if (error) {
+    console.error(error);
+    alert("Error saving data ❌");
+  } else {
+    alert("✅ Data Saved Successfully!");
+    location.reload();
   }
-});
+}
 
-    
-// INIT
-    loadAllData();
+
+// ================= INIT =================
+loadAllData();
+
 </script>
 
     <script>
