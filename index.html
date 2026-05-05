@@ -635,50 +635,6 @@ const supabaseClient = window.supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2aGVuY2dxZGp3enFnaGFpbXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NDY4MjMsImV4cCI6MjA5MzAyMjgyM30.kyJzXYsANeFsfAxbdbmXxRjRTqN4EKs3J7qiX0tHIaI"
 );
 let masterData = [];
-function getRecentMonths() {
-  const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
-
-  const current = new Date().getMonth();
-
-  return [
-    months[(current - 2 + 12) % 12],
-    months[(current - 3 + 12) % 12],
-    months[(current - 4 + 12) % 12]
-  ];
-}
-    function setYears(select) {
-  const currentYear = new Date().getFullYear();
-
-  select.innerHTML = `<option selected>${currentYear}</option>`;
-}
-
-// ================= MONTHLY ROW ADD =================
-function addMonthlyRow() {
-
-  const template = document.querySelector("#monthlyTemplate .month-card");
-
-  const newRow = template.cloneNode(true);
-
-  newRow.querySelectorAll("input").forEach(i => i.value = "");
-
-  const months = getRecentMonths();
-
-  newRow.querySelectorAll(".challan-month, .ambulance-month").forEach(select => {
-    select.innerHTML = months.map(m => `<option>${m}</option>`).join("");
-  });
-
-  newRow.querySelectorAll(".challan-year, .ambulance-year").forEach(select => {
-    setYears(select);
-  });
-
-  document.getElementById("monthlyContainer").appendChild(newRow);
-
-  updateRemoveButtons();
-}
-
 
 // ================= PAGE LOAD =================
 document.addEventListener("DOMContentLoaded", () => {
@@ -789,22 +745,6 @@ document.getElementById("upcDropdown").addEventListener("change", function () {
   }
 });
 
-// 🔥 REMOVE BUTTON LOGIC (ONLY ONCE)
-document.getElementById("removeLastRowBtn").addEventListener("click", function () {
-
-  const container = document.getElementById("monthlyContainer");
-  const rows = container.children; // better than querySelector
-
-  if (rows.length === 1) {
-    alert("At least one row is required");
-    return;
-  }
-
-  container.removeChild(rows[rows.length - 1]);
-
-});
-
-
     
 // INIT
     loadAllData();
@@ -873,10 +813,9 @@ async function saveFormData() {
     
   // ================= OPERATION =================
   const operational = {
-    since: document.querySelector("input[type='date']").value,
-    status: document.querySelectorAll(".form-select")[1].value,
-    challan: document.querySelectorAll(".form-select")[2].value
-  };
+  since: document.getElementById("operationalSince").value,
+  status: document.getElementById("operationalStatus").value
+};
 
    //------------funtioning-----
 
