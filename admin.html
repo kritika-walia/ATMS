@@ -71,11 +71,10 @@ Download Excel
         <th>Operational Since</th>
         <th>Status</th>
 
-        <th>Challan Month</th>
-        <th>Challan Count</th>
-
-        <th>Ambulance Month</th>
-        <th>Ambulance Count</th>
+        <th>Year</th>
+        <th>Quarter</th>
+        <th>Violations</th>
+        <th>Dispatch</th>
 
         <th>SI Name</th>
         <th>Contact Person</th>
@@ -129,65 +128,50 @@ async function loadData() {
     September: 8, October: 9, November: 10, December: 11
   };
 
-  data.forEach(row => {
-
-  let monthly = row.monthly;
-
-  if (typeof monthly === "string") {
-    try {
-      monthly = JSON.parse(monthly);
-    } catch {
-      monthly = [];
-    }
-  }
-
-  if (!Array.isArray(monthly) || monthly.length === 0) {
-    monthly = [{}];
-  }
+ data.forEach(row => {
 
   const equipmentText = (row.equipment || [])
     .map(e => `${e.component}: ${e.working}/${e.installed}`)
     .join(" | ");
 
-  monthly.forEach(m => {
+  const functioning = row.functioning || {};
 
- const tr = document.createElement("tr");
+  const tr = document.createElement("tr");
 
-tr.innerHTML = `
-  <td>${row.ro || ""}</td>
-  <td>${row.piu || ""}</td>
-  <td>${row.upc || ""}</td>
-  <td>${row.project_title || ""}</td>
+  tr.innerHTML = `
+    <td>${row.ro || ""}</td>
+    <td>${row.piu || ""}</td>
+    <td>${row.upc || ""}</td>
+    <td>${row.project_title || ""}</td>
 
-  <td>${row.length || ""}</td>
-  <td>${row.lanes || ""}</td>
-  <td>${row.atms_status || ""}</td>
+    <td>${row.length || ""}</td>
+    <td>${row.lanes || ""}</td>
+    <td>${row.atms_status || ""}</td>
 
-  <td>${row.ofc?.status || ""}</td>
-  <td>${row.ofc?.length || ""}</td>
-  <td>${row.ofc?.core || ""}</td>
+    <td>${row.ofc?.status || ""}</td>
+    <td>${row.ofc?.length || ""}</td>
+    <td>${row.ofc?.core || ""}</td>
 
-  <td>${equipmentText}</td>
+    <td>${equipmentText}</td>
 
-  <td>${row.operational?.since || ""}</td>
-  <td>${row.operational?.status || ""}</td>
+    <td>${row.operational?.since || ""}</td>
+    <td>${row.operational?.status || ""}</td>
 
-  <td>${m.challan_month || ""}</td>
-  <td>${m.challan_count || ""}</td>
+    <td>${functioning.year || ""}</td>
+    <td>${functioning.quarter || ""}</td>
+    <td>${functioning.violations || ""}</td>
+    <td>${functioning.dispatch || ""}</td>
 
-  <td>${m.ambulance_month || ""}</td>
-  <td>${m.ambulance_count || ""}</td>
+    <td>${row.si_name || ""}</td>
+    <td>${row.spoc_name || ""}</td>
+    <td>${row.spoc_email || ""}</td>
+    <td>${row.si_address || ""}</td>
+    <td>${row.spoc_phone || ""}</td>
+  `;
 
-  <td>${row.si_name || ""}</td>
-  <td>${row.spoc_name || ""}</td>
-  <td>${row.spoc_email || ""}</td>
-  <td>${row.si_address || ""}</td>
-   <td>${row.spoc_phone || ""}</td>
-`;
-
-tbody.appendChild(tr);
-    });
-    });  
+  tbody.appendChild(tr);
+});
+  });  
 }
 
 async function fetchAllMaster(allowedStatuses) {
@@ -285,55 +269,47 @@ async function exportToCSV() {
       .map(e => `${e.component}: ${e.working}/${e.installed}`)
       .join(" | ");
 
-   let monthly = item.monthly;
+   data.forEach(item => {
 
-if (typeof monthly === "string") {
-  try {
-    monthly = JSON.parse(monthly);
-  } catch {
-    monthly = [];
-  }
-}
+  const equipmentText = (item.equipment || [])
+    .map(e => `${e.component}: ${e.working}/${e.installed}`)
+    .join(" | ");
 
-if (!Array.isArray(monthly)) monthly = [];
+  const functioning = item.functioning || {};
 
-    monthly.forEach(m => {
+  rows.push({
+    RO: item.ro,
+    PIU: item.piu,
+    UPC: item.upc,
+    Project: item.project_title,
 
-      rows.push({
-        RO: item.ro,
-        PIU: item.piu,
-        UPC: item.upc,
-        Project: item.project_title,
+    Length: item.length,
+    Lanes: item.lanes,
+    ATMS_Status: item.atms_status,
 
-        Length: item.length,
-        Lanes: item.lanes,
-        ATMS_Status: item.atms_status,
+    OFC_Status: item.ofc?.status,
+    OFC_Length: item.ofc?.length,
+    OFC_Core: item.ofc?.core,
 
-        OFC_Status: item.ofc?.status,
-        OFC_Length: item.ofc?.length,
-        OFC_Core: item.ofc?.core,
+    Equipment: equipmentText,
 
-        Equipment: equipmentText,
+    Operational_Since: item.operational?.since,
+    Operational_Status: item.operational?.status,
 
-        Operational_Since: item.operational?.since,
-        Operational_Status: item.operational?.status,
+    // 🔥 NEW
+    Year: functioning.year,
+    Quarter: functioning.quarter,
+    Violations: functioning.violations,
+    Dispatch: functioning.dispatch,
 
-        Challan_Month: m.challan_month,
-        Challan_Year: m.challan_year,
-        Challan_Count: m.challan_count,
+    Vendor_Name: item.si_name,
+    Vendor_Address: item.si_address,
+    Contact_Person: item.spoc_name,
+    Contact_Email: item.spoc_email,
+    Contact_Number: item.spoc_phone
+  });
 
-        Ambulance_Month: m.ambulance_month,
-        Ambulance_Year: m.ambulance_year,
-        Ambulance_Count: m.ambulance_count,
-
-        Vendor_Name: item.si_name,
-        Vendor_Address: item.si_address,
-        Contact_Person: item.spoc_name,
-        Contact_Email: item.spoc_email,
-        Contact_Number: item.spoc_phone,
-      });
-
-    });
+});
 
   });
 
