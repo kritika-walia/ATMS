@@ -484,71 +484,113 @@ title="Mobile Radio Communication System availability. Select Yes or No.">i</spa
         <small class="text-muted">Select commissioning / go-live date</small>
     </div>
 
-
-
 <!-- Section 5 -->
+
 <div class="card-box">
-  <div class="section-title">5. Monthly Outcomes</div>
+  <div class="section-title">
+    5. ATMS Functioning Update (Quarter: JFM 2026)
+  </div>
 
-  <!-- 👇 EMPTY container -->
-  <div id="monthlyContainer"></div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
 
-  <!-- 👇 HIDDEN TEMPLATE -->
-  <div id="monthlyTemplate" style="display:none;">
-  <div class="month-card">
-      
-  <div class="row g-4">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>Parameter</th>
+          <th>Count (JFM 2026)</th>
+        </tr>
+      </thead>
 
-    <!-- 🔹 ROW 1 (TOP 3) -->
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Month (Challans)</label>
-      <select class="form-select challan-month"></select>
-    </div>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Violations Recorded</td>
+          <td>
+            <input type="number" id="violationsCount" class="form-control" placeholder="Enter count">
+          </td>
+        </tr>
 
-    <div class="col-md-4">
+        <tr>
+          <td>2</td>
+          <td>Emergency Dispatch, Citizen Issues Supported</td>
+          <td>
+            <input type="number" id="dispatchCount" class="form-control" placeholder="Enter count">
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="small-note mt-2">
+    <b>Note 1:</b> Lane violations, reverse driving, unauthorized parking, over-speeding etc.<br>
+    <b>Note 2:</b> Ambulance dispatch, 1033/112 support, VMS alerts, highway risk handling etc.
+  </div>
+
+</div>
+
+<div class="card-box">
+  <div class="section-title">
+    5. ATMS Functioning Update
+  </div>
+
+  <!-- 🔥 Year + Quarter -->
+  <div class="row mb-3">
+
+    <div class="col-md-6">
       <label class="form-label fw-semibold">Year</label>
-      <select class="form-select challan-year"></select>
+      <select id="yearSelect" class="form-select">
+        <option value="2026" selected>2026</option>
+      </select>
     </div>
 
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Challans Created</label>
-      <input type="number" class="form-control challan-count">
-    </div>
-
-    <!-- 🔹 ROW 2 (BOTTOM 3) -->
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Month (Ambulance)</label>
-      <select class="form-select ambulance-month"></select>
-    </div>
-
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Year</label>
-      <select class="form-select ambulance-year"></select>
-    </div>
-
-    <div class="col-md-4">
-      <label class="form-label fw-semibold">Ambulance Dispatch Support Provided</label>
-      <input type="number" class="form-control ambulance-count">
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">Quarter</label>
+      <select id="quarterSelect" class="form-select">
+        <option value="Q1" selected>Quarter 1 (JFM)</option>
+      </select>
     </div>
 
   </div>
 
+  <!-- 🔥 Table -->
+  <div class="table-responsive">
+    <table class="table table-bordered">
+
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>Parameter</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Violations Recorded</td>
+          <td>
+            <input type="number" id="violationsCount" class="form-control">
+          </td>
+        </tr>
+
+        <tr>
+          <td>2</td>
+          <td>Emergency Dispatch, Citizen Issues Supported</td>
+          <td>
+            <input type="number" id="dispatchCount" class="form-control">
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+
     
-</div>
-
-      </div>
-     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-
-  <button type="button" class="btn btn-danger" id="removeLastRowBtn">
-    Remove
-  </button>
-
-  <button type="button" class="btn btn-primary" onclick="addMonthlyRow()">
-    + Add More
-  </button>
-
-</div>
-
    
 </div>
     <!-- Section 6 -->
@@ -908,25 +950,14 @@ async function saveFormData() {
     challan: document.querySelectorAll(".form-select")[2].value
   };
 
-   
+   //------------funtioning-----
 
-  // ================= MONTHLY =================
-
-   let monthlyData = [];
-
-document.querySelectorAll("#monthlyContainer .month-card").forEach(row => {
-
-  monthlyData.push({
-    challan_month: row.querySelector(".challan-month").value,
-    challan_year: row.querySelector(".challan-year").value,
-    challan_count: row.querySelector(".challan-count").value,
-
-    ambulance_month: row.querySelector(".ambulance-month").value,
-    ambulance_year: row.querySelector(".ambulance-year").value,
-    ambulance_count: row.querySelector(".ambulance-count").value
-  });
-
-});
+  const functioning = {
+  year: document.getElementById("yearSelect").value,
+  quarter: document.getElementById("quarterSelect").value,
+  violations: document.getElementById("violationsCount").value,
+  dispatch: document.getElementById("dispatchCount").value
+};
 
 
     // ================= VENDOR =================
@@ -956,7 +987,8 @@ const spoc_phone = document.getElementById("spocPhone").value;
     si_address,
     spoc_name,
     spoc_email,
-    spoc_phone 
+    spoc_phone,
+    functioning
   }]);
 
   if (error) {
