@@ -831,10 +831,12 @@ async function saveFormData() {
       spoc_email,
       spoc_phone
     }]);
-
-    if (error) {
-  console.error("FULL ERROR:", error);
-  alert(error.message);
+    
+if (error) {
+  console.error(error);
+  alert("Error saving data ❌");
+} else {
+  showThankYou(); // 🔥 yahi missing tha
 }
 
 }
